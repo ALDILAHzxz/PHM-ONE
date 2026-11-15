@@ -1,0 +1,269 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views';
+
+/* -------------------------------------------------------------------------
+ | Dark mode is driven by a class on <html>, not the OS preference alone, so
+ | the navbar toggle can override it and the choice can be persisted.
+ * ---------------------------------------------------------------------- */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* -------------------------------------------------------------------------
+ | PHM corporate palette (master specification section 26).
+ | Semantic names resolve to different hex values per theme, so markup uses
+ | `bg-surface` / `text-body` instead of repeating dark: variants everywhere.
+ * ---------------------------------------------------------------------- */
+:root {
+    /* brand constants — identical in both themes */
+    --phm-navy: #1b365d;
+    --phm-blue: #0077c8;
+
+    /* light mode */
+    --phm-page: #f2f4f7;
+    --phm-surface: #ffffff;
+    --phm-surface-raised: #ffffff;
+    --phm-surface-muted: #f6f8fb;
+    --phm-body: #1e293b;
+    --phm-muted: #475569;
+    --phm-interactive: #0077c8;
+    --phm-icon-accent: #0077c8;
+    --phm-border: #e2e8f0;
+    --phm-border-strong: #64748b;
+    --phm-navbar: #1b365d;
+    --phm-navbar-hover: rgba(255, 255, 255, 0.14);
+    --phm-ring: #0077c8;
+    --phm-shadow: 15 23 42;
+}
+
+:root.dark {
+    --phm-page: #0b111b;
+    --phm-surface: #172131;
+    --phm-surface-raised: #1d2a3d;
+    --phm-surface-muted: #131d2b;
+    --phm-body: #f2f7ff;
+    --phm-muted: #bdcce0;
+    --phm-interactive: #83c7ff;
+    --phm-icon-accent: #8ccbff;
+    --phm-border: #2c3e57;
+    --phm-border-strong: #4a719a;
+    --phm-navbar: #0f1b2d;
+    --phm-navbar-hover: rgba(140, 203, 255, 0.16);
+    --phm-ring: #8ccbff;
+    --phm-shadow: 0 0 0;
+}
+
+/* `inline` keeps the utility pointing at the custom property, so switching
+   the .dark class restyles everything without regenerating classes. */
+@theme inline {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-navy: var(--phm-navy);
+    --color-brand: var(--phm-blue);
+
+    --color-page: var(--phm-page);
+    --color-surface: var(--phm-surface);
+    --color-surface-raised: var(--phm-surface-raised);
+    --color-surface-muted: var(--phm-surface-muted);
+    --color-body: var(--phm-body);
+    --color-muted: var(--phm-muted);
+    --color-interactive: var(--phm-interactive);
+    --color-icon-accent: var(--phm-icon-accent);
+    --color-line: var(--phm-border);
+    --color-line-strong: var(--phm-border-strong);
+    --color-navbar: var(--phm-navbar);
+
+    /* spacing scale from section 28 is Tailwind's default 4px scale */
+    --radius-card: 0.875rem; /* 14px */
+    --radius-control: 0.75rem; /* 12px */
+}
+
+@layer base {
+    /* Alpine: keep x-show elements hidden until Alpine initialises. */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background-color: var(--phm-page);
+        color: var(--phm-body);
+        font-size: 1rem;
+        line-height: 1.6;
+        /* iOS safe area so the floating AI button clears the home indicator */
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Always-visible keyboard focus (WCAG 2.2 AA) */
+    :focus-visible {
+        outline: 2px solid var(--phm-ring);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    /* Respect the OS reduced-motion preference everywhere. */
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    /* Numeric production inputs: no spinners, tabular digits. */
+    input[type='number']::-webkit-outer-spin-button,
+    input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+/* -------------------------------------------------------------------------
+ | Typography scale (section 27)
+ * ---------------------------------------------------------------------- */
+@utility phm-page-title {
+    @apply text-[1.5rem] leading-tight font-semibold tracking-tight md:text-[1.875rem];
+}
+
+@utility phm-section-heading {
+    @apply text-[1.25rem] leading-snug font-semibold md:text-[1.375rem];
+}
+
+@utility phm-card-heading {
+    @apply text-[1.125rem] leading-snug font-semibold;
+}
+
+@utility phm-helper {
+    @apply text-[0.875rem] leading-relaxed text-muted;
+}
+
+@utility phm-kpi {
+    @apply text-[1.75rem] leading-none font-semibold tabular-nums md:text-[2.125rem];
+}
+
+/* -------------------------------------------------------------------------
+ | Surfaces (section 28)
+ * ---------------------------------------------------------------------- */
+@utility phm-card {
+    @apply rounded-[var(--radius-card)] border border-line bg-surface p-5 md:p-6;
+    box-shadow: 0 1px 2px rgb(var(--phm-shadow) / 0.06);
+}
+
+/* Lift on hover ONLY for cards that are genuinely clickable (section 29). */
+@utility phm-card-interactive {
+    @apply transition-[transform,box-shadow,border-color] duration-200 ease-out;
+    @apply hover:-translate-y-[3px] hover:border-line-strong motion-reduce:hover:translate-y-0;
+
+    &:hover {
+        box-shadow: 0 10px 24px rgb(var(--phm-shadow) / 0.12);
+    }
+
+    &:active {
+        transform: translateY(-1px) scale(0.995);
+    }
+}
+
+/* -------------------------------------------------------------------------
+ | Controls (section 28: input 56px, button 52-56px, icon button 44-48px)
+ * ---------------------------------------------------------------------- */
+@utility phm-input {
+    @apply block w-full rounded-[var(--radius-control)] border border-line-strong bg-surface px-4 text-[1.125rem] text-body;
+    @apply min-h-[3.5rem] placeholder:text-muted/70;
+    @apply transition-colors duration-150 focus:border-brand focus:ring-2 focus:ring-brand/40 focus:outline-none;
+    @apply disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted;
+}
+
+@utility phm-textarea {
+    @apply block w-full rounded-[var(--radius-control)] border border-line-strong bg-surface p-4 text-base text-body;
+    @apply placeholder:text-muted/70;
+    @apply transition-colors duration-150 focus:border-brand focus:ring-2 focus:ring-brand/40 focus:outline-none;
+}
+
+@utility phm-label {
+    @apply mb-2 block text-base font-medium text-body;
+}
+
+@utility phm-btn {
+    @apply inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-[var(--radius-control)] px-6;
+    @apply text-[1.0625rem] font-semibold transition-all duration-200 ease-out;
+    @apply disabled:cursor-not-allowed disabled:opacity-60;
+    @apply active:scale-[0.985] motion-reduce:active:scale-100;
+}
+
+@utility phm-btn-primary {
+    @apply bg-brand text-white;
+    @apply hover:bg-[#0069b0] hover:shadow-[0_6px_16px_rgba(0,119,200,0.3)];
+    @apply dark:hover:bg-[#0084dd];
+}
+
+@utility phm-btn-secondary {
+    @apply border border-line-strong bg-surface text-body;
+    @apply hover:border-brand hover:text-interactive;
+}
+
+@utility phm-btn-ghost {
+    @apply text-interactive hover:bg-brand/10;
+}
+
+@utility phm-btn-danger {
+    @apply border border-rose-400 bg-rose-50 text-rose-800;
+    @apply hover:bg-rose-100;
+    @apply dark:border-rose-400/50 dark:bg-rose-500/15 dark:text-rose-200 dark:hover:bg-rose-500/25;
+}
+
+/* Navbar action controls: icon only, 44-48px target, 22-24px glyph. */
+@utility phm-icon-btn {
+    @apply inline-flex size-11 items-center justify-center rounded-[0.6875rem] text-white/90;
+    @apply transition-colors duration-200 md:size-12;
+    @apply hover:bg-[var(--phm-navbar-hover)] hover:text-white;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+}
+
+@utility phm-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[0.8125rem] font-medium ring-1 ring-inset;
+}
+
+/* Drawer navigation rows: minimum 52px tall, icon + readable text label. */
+@utility phm-drawer-link {
+    @apply flex min-h-[3.25rem] items-center gap-3 rounded-[var(--radius-control)] px-3 text-base font-medium;
+    @apply text-body transition-colors duration-150;
+    @apply hover:bg-brand/10 hover:text-interactive;
+}
+
+@utility phm-drawer-link-active {
+    @apply bg-brand/12 text-interactive;
+    box-shadow: inset 3px 0 0 var(--phm-blue);
+}
+
+/* Thin scrollbar for the chat panel and long lists. */
+@utility phm-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--phm-border-strong) transparent;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--phm-border-strong);
+        border-radius: 9999px;
+    }
+}
