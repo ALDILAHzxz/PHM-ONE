@@ -68,19 +68,19 @@ export default function CreateShipmentPage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href="/pengiriman"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4 transition-colors"
+          className="inline-flex items-center gap-1.5 text-label font-semibold text-redup hover:text-teks dark:hover:text-slate-300 mb-4 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="h-[1.125rem] w-[1.125rem] shrink-0" />
           <span>Kembali ke Daftar Pengiriman</span>
         </Link>
 
         <div className="phm-card">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-lg font-bold text-teks mb-4">
             Formulir Surat Jalan Ekspedisi
           </h2>
 
           {isSuccess && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-xs font-semibold animate-in fade-in">
+            <div className="mb-6 p-4 rounded-kontrol bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-label font-semibold animate-in fade-in">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
               <span>Surat Jalan berhasil diterbitkan! Mengalihkan…</span>
             </div>
@@ -104,7 +104,7 @@ export default function CreateShipmentPage() {
             </div>
 
             {selectedOrder && (
-              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 dark:border-emerald-900 text-xs">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-kontrol border border-emerald-200 dark:border-emerald-900 text-label">
                 <div className="text-emerald-800 dark:text-emerald-300 font-semibold">
                   Stok Produksi Terverifikasi: <strong>{orderProgress.verified} pcs</strong> (dari target {orderProgress.target} pcs)
                 </div>
@@ -173,7 +173,7 @@ export default function CreateShipmentPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Instruksi penyerahan dokumen, packing list, dll."
                 rows={2}
-                className="phm-input text-xs"
+                className="phm-input text-label"
               />
             </div>
 
@@ -181,9 +181,9 @@ export default function CreateShipmentPage() {
               <button
                 type="submit"
                 disabled={isSuccess}
-                className="w-full h-11 bg-[#0077C8] hover:bg-[#0062A3] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full h-11 bg-brand hover:bg-brand-pekat text-white font-semibold text-label rounded-kontrol flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <Truck className="w-4 h-4" />
+                <Truck className="h-[1.125rem] w-[1.125rem] shrink-0" />
                 <span>Terbitkan Surat Jalan & Serahkan ke Driver</span>
               </button>
             </div>

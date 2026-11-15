@@ -157,3 +157,89 @@ Seluruh aturan arsitektur manufaktur PHM-ONE tetap ditegakkan:
 - **Generasi Halaman Statis**: 24/24 rute halaman berhasil dibuat secara optimal.
 - **Development Server**: Aktif berjalan di `http://localhost:3000`.
 - **Kesiapan Deploy**: Siap dihubungkan ke GitHub dan di-deploy ke Vercel kapan saja saat pengguna menghendaki.
+
+---
+
+# Perbaikan Desain Antarmuka (16 November 2026)
+
+Dilakukan setelah migrasi Next.js, berdasarkan temuan tampilan yang berantakan
+pada halaman Riwayat Laporan dan acuan `DESIGN-PHM-REFERENSI.md`.
+
+## A. Bug tata letak: logo navbar terpotong sidebar
+
+**Gejala:** blok "PHM ONE / MANUFAKTUR" tertutup panel sidebar.
+
+**Penyebab:** pita mode demo berada di aliran normal dan mendorong navbar ±28px
+ke bawah, sedangkan sidebar dipasang `fixed top-16` (64px). Navbar menempati
+y=28..92 sementara sidebar mulai di y=64, sehingga 28px bagian bawah navbar
+tertutup.
+
+**Perbaikan:** pita + navbar digabung menjadi satu blok `sticky top-0`, dan
+tingginya ditulis sekali sebagai `--h-shell` di `globals.css`. Sidebar, konten,
+dan drawer membaca angka yang sama. Konten juga tidak lagi memakai `ml-64` dan
+`mx-auto` bersamaan (yang membuat halaman miring); sekarang `md:pl-sidebar` pada
+pembungkus, `mx-auto` pada wadah di dalamnya.
+
+## B. Tabel yang terhimpit
+
+7–8 kolom berteks 12px tanpa kontrol lebar membuat nama komponen pecah menjadi
+empat baris. Dibuat komponen `DataTable` yang:
+- mewajibkan setiap kolom bisa menyatakan lebarnya dan memakai `table-fixed`;
+- meringkas kolom (mis. catatan operator + hasil review digabung);
+- berubah menjadi kartu bertumpuk di layar < 1024px, bukan scroll horizontal.
+
+Diterapkan ke 9 halaman bertabel; tidak ada lagi `<table>` mentah di `src/app`.
+
+## C. Palet: satu warna merek
+
+Mengikuti prinsip dasbor Jarwo — satu warna merek, warna lain hanya status.
+- Merek: `#0d6076` (terang) / `#38bdf8` (gelap). Nilai terang dipilih karena
+  `#0e7490` hanya mencapai 4,4:1 dengan teks putih.
+- Dihapus: gradien biru→indigo pada tombol Beesha, varian dekoratif
+  `blue|emerald|amber|indigo|rose` pada `StatCard` (diganti nada bermakna
+  `brand|aman|waspada|kritis`), dan status berwarna merek pada `StatusBadge`.
+- Token didefinisikan sebagai CSS custom property dan dipetakan ke Tailwind,
+  sehingga `bg-kartu`/`text-teks` bekerja di kedua tema tanpa varian `dark:`.
+
+**Catatan:** tema **terang** dijadikan default (referensi memakai gelap). Alasan:
+aplikasi didemonstrasikan di ruang rapat dan dipakai di lantai produksi yang
+terang. Tema gelap tetap lengkap dan dapat diaktifkan dari navbar.
+
+## D. Keterbacaan untuk pengguna Gen X & milenial
+
+- Ukuran dasar 15px; tidak ada lagi teks di bawah 12px (sebelumnya 37 tempat
+  memakai 11px atau lebih kecil, 120 tempat memakai 12px).
+- Target sentuh minimum 44px pada seluruh tombol, input, dan baris navigasi.
+- Ikon dalam tombol dinaikkan dari 14px ke 18px.
+- Navigasi sidebar naik dari 12px ke 15px.
+
+## E. Penyederhanaan
+
+- Tombol "Tanya Beesha AI" berwarna gradien dengan titik berdenyut dipindahkan
+  dari navbar menjadi tombol mengapung di kanan bawah. Navbar kini hanya berisi
+  tiga kontrol: menu (mobile), tema, dan profil.
+- Panel kredensial demo di halaman login diringkas dari tiga baris mono per akun
+  menjadi dua baris terbaca.
+- Radius disatukan ke dua nilai: 8px (kontrol) dan 12px (kartu).
+
+## F. Perbaikan teknis lain
+
+- **Tabrakan nama kelas:** token ukuran font bernama `kartu` bertabrakan dengan
+  warna bernama `kartu`. Tailwind menghasilkan dua aturan `.text-kartu` dan versi
+  warna menang, sehingga teks menjadi sewarna permukaan kartu (tidak terbaca).
+  Token ukuran diganti namanya menjadi `isi`.
+- **Pita mode demo:** memakai token tetap `--pita-latar` (#b45309) alih-alih
+  `--waspada`, karena `--waspada` berubah menjadi kuning terang di mode gelap dan
+  teks putih di atasnya hanya ~1,7:1.
+- Skrip anti-kedip tema ditambahkan di `<head>`, beserta `theme-color` per tema.
+- Tautan "Lewati ke konten utama", `aria-label` pada tombol ikon, `aria-current`
+  pada menu aktif, dan dukungan `prefers-reduced-motion`.
+
+## G. Verifikasi
+
+- `npx tsc --noEmit` — bersih.
+- `npx next build` — 24/24 halaman statis ter-generate.
+- 21/21 rute diuji lewat HTTP pada `next start`, seluruhnya 200.
+- **Belum diverifikasi secara visual di browser** (tidak tersedia alat otomasi
+  browser di lingkungan pengerjaan). Pemeriksaan dilakukan terhadap markup yang
+  dirender, aturan CSS hasil build, dan perhitungan tata letak.

@@ -1,75 +1,101 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { AppLayout } from '../../components/layout/AppLayout';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+import { DataTable, DataColumn } from '../../components/ui/DataTable';
 import { useOperations } from '../../context/OperationsContext';
-import Link from 'next/link';
-import { Truck, PlusCircle, ArrowRight } from 'lucide-react';
+import { Shipment } from '../../types';
+import { Truck, PlusCircle } from 'lucide-react';
 
 export default function ShipmentsListPage() {
   const { shipments } = useOperations();
 
+  const columns: DataColumn<Shipment>[] = [
+    {
+      key: 'partner',
+      header: 'Mitra & Surat Jalan',
+      width: '26%',
+      primary: true,
+      hideLabelOnMobile: true,
+      cell: (s) => (
+        <div>
+          <span className="block font-semibold text-teks">{s.customer_name}</span>
+          <span className="phm-num mt-0.5 block text-label text-redup">
+            <span className="text-brand-aksen">{s.shipment_number}</span> · {s.order_number}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'product',
+      header: 'Komponen',
+      width: '22%',
+      cell: (s) => <span className="text-teks">{s.product_name}</span>,
+    },
+    {
+      key: 'qty',
+      header: 'Muatan',
+      width: '110px',
+      align: 'right',
+      cell: (s) => (
+        <span className="phm-num font-semibold text-teks">
+          {s.quantity}
+          <span className="ml-1 text-label font-normal text-redup">pcs</span>
+        </span>
+      ),
+    },
+    {
+      key: 'fleet',
+      header: 'Armada & Supir',
+      width: '18%',
+      cell: (s) => (
+        <div>
+          <span className="block text-teks">{s.driver_name || '—'}</span>
+          <span className="phm-num mt-0.5 block text-label text-redup">
+            {s.vehicle_plate || 'Kendaraan belum ditentukan'}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'destination',
+      header: 'Tujuan',
+      cell: (s) => <span className="text-teks">{s.destination_address}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      width: '180px',
+      align: 'right',
+      hideLabelOnMobile: true,
+      cell: (s) => <StatusBadge status={s.status} />,
+    },
+  ];
+
   return (
     <AppLayout>
       <PageHeader
-        title="Daftar Pengiriman Barang & Ekspedisi"
-        description="Kelola jadwal keberangkatan armada logistik dan penerbitan Surat Jalan (SJ) resmi PT PHM."
+        title="Daftar Pengiriman"
+        description="Jadwal keberangkatan armada dan penerbitan surat jalan."
         action={
-          <Link href="/pengiriman/catat" className="phm-btn-primary text-xs">
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Terbitkan Surat Jalan</span>
+          <Link href="/pengiriman/catat" className="phm-btn-primary">
+            <PlusCircle className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+            <span>Buat Surat Jalan</span>
           </Link>
         }
       />
 
-      <div className="phm-card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-              <tr>
-                <th className="py-3 px-4">No. Pengiriman</th>
-                <th className="py-3 px-4">Pesanan & Mitra</th>
-                <th className="py-3 px-4">Komponen</th>
-                <th className="py-3 px-4 text-center">Muatan (pcs)</th>
-                <th className="py-3 px-4">Armada & Supir</th>
-                <th className="py-3 px-4">Tujuan Pengiriman</th>
-                <th className="py-3 px-4 text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {shipments.map((s) => (
-                <tr key={s.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                  <td className="py-3.5 px-4 font-mono font-bold text-[#0077C8]">
-                    {s.shipment_number}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-slate-900 dark:text-white">{s.customer_name}</div>
-                    <div className="text-[0.6875rem] text-slate-400 font-mono">{s.order_number}</div>
-                  </td>
-                  <td className="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-200">
-                    {s.product_name}
-                  </td>
-                  <td className="py-3.5 px-4 text-center font-extrabold text-sm">
-                    {s.quantity} pcs
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                    <div className="font-semibold text-slate-900 dark:text-white">{s.driver_name}</div>
-                    <div className="text-[0.6875rem] text-slate-400 font-mono">{s.vehicle_plate}</div>
-                  </td>
-                  <td className="py-3.5 px-4 max-w-xs text-slate-600 dark:text-slate-300 truncate">
-                    {s.destination_address}
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <StatusBadge status={s.status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable
+        columns={columns}
+        rows={shipments}
+        getKey={(s) => s.id}
+        emptyIcon={Truck}
+        emptyTitle="Belum ada pengiriman"
+        emptyMessage="Surat jalan yang Anda terbitkan akan muncul di sini."
+      />
     </AppLayout>
   );
 }

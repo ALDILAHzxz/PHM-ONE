@@ -17,9 +17,9 @@ export default function HomePage() {
   }, [user, activeRole, router]);
 
   return (
-    <div className="min-h-screen bg-[#F4F6F9] dark:bg-[#0B1120] flex items-center justify-center">
-      <div className="flex items-center gap-3 text-slate-500 text-sm font-medium">
-        <div className="w-5 h-5 border-2 border-[#0077C8] border-t-transparent rounded-full animate-spin" />
+    <div className="flex min-h-screen items-center justify-center bg-latar">
+      <div className="flex items-center gap-3 text-redup text-isi font-medium">
+        <div className="h-5 w-5 animate-spin rounded-pil border-2 border-brand border-t-transparent" />
         <span>Mengarahkan ke PHM One…</span>
       </div>
     </div>

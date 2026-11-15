@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AppLayout } from '../../../components/layout/AppLayout';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
+import { DataTable } from '../../../components/ui/DataTable';
 import { useAuth } from '../../../context/AuthContext';
 import { useOperations } from '../../../context/OperationsContext';
 import { INITIAL_USERS } from '../../../data/mockData';
@@ -70,12 +71,12 @@ export default function AssignmentManagerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Create Assignment Form */}
         <div className="phm-card lg:col-span-1">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-base font-bold text-teks mb-4">
             Buat Penugasan Baru
           </h2>
 
           {isSuccess && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center gap-2">
+            <div className="mb-4 p-3 rounded-kontrol bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 text-label font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Penugasan operator berhasil diterbitkan!</span>
             </div>
@@ -87,7 +88,7 @@ export default function AssignmentManagerPage() {
               <select
                 value={workOrderId}
                 onChange={(e) => setWorkOrderId(Number(e.target.value))}
-                className="phm-input text-xs"
+                className="phm-input text-label"
                 required
               >
                 {workOrders.map((w) => (
@@ -103,7 +104,7 @@ export default function AssignmentManagerPage() {
               <select
                 value={operatorId}
                 onChange={(e) => setOperatorId(Number(e.target.value))}
-                className="phm-input text-xs"
+                className="phm-input text-label"
                 required
               >
                 {operators.map((o) => (
@@ -119,7 +120,7 @@ export default function AssignmentManagerPage() {
               <select
                 value={stageId}
                 onChange={(e) => setStageId(Number(e.target.value))}
-                className="phm-input text-xs"
+                className="phm-input text-label"
                 required
               >
                 {stages.map((s) => (
@@ -135,7 +136,7 @@ export default function AssignmentManagerPage() {
               <select
                 value={workstationId}
                 onChange={(e) => setWorkstationId(Number(e.target.value))}
-                className="phm-input text-xs"
+                className="phm-input text-label"
                 required
               >
                 {workstations.map((ws) => (
@@ -152,7 +153,7 @@ export default function AssignmentManagerPage() {
                 <select
                   value={shiftId}
                   onChange={(e) => setShiftId(Number(e.target.value))}
-                  className="phm-input text-xs"
+                  className="phm-input text-label"
                   required
                 >
                   {shifts.map((sh) => (
@@ -170,7 +171,7 @@ export default function AssignmentManagerPage() {
                   value={targetQuantity}
                   onChange={(e) => setTargetQuantity(e.target.value === '' ? '' : Number(e.target.value))}
                   placeholder="Contoh: 100"
-                  className="phm-input text-xs font-bold"
+                  className="phm-input text-label font-bold"
                   min={1}
                   required
                 />
@@ -179,62 +180,90 @@ export default function AssignmentManagerPage() {
 
             <button
               type="submit"
-              className="w-full h-10 bg-[#0077C8] hover:bg-[#0062A3] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="w-full h-10 bg-brand hover:bg-brand-pekat text-white font-semibold text-label rounded-kontrol flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <PlusCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
               <span>Simpan & Tugaskan</span>
             </button>
           </form>
         </div>
 
         {/* Existing Assignments Table */}
-        <div className="phm-card lg:col-span-2 overflow-hidden p-0">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              Daftar Penugasan Operator Aktif
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-                <tr>
-                  <th className="py-3 px-4">Operator</th>
-                  <th className="py-3 px-4">WO & Komponen</th>
-                  <th className="py-3 px-4">Stasiun & Tahap</th>
-                  <th className="py-3 px-4 text-center">Target (pcs)</th>
-                  <th className="py-3 px-4">Shift</th>
-                  <th className="py-3 px-4 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {assignments.map((assign) => (
-                  <tr key={assign.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-slate-900 dark:text-white">{assign.operator_name}</div>
-                      <div className="text-[0.6875rem] text-slate-400 font-mono">{assign.operator_nik}</div>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="font-semibold text-slate-800 dark:text-slate-200">{assign.product_name}</div>
-                      <div className="text-[0.6875rem] text-[#0077C8] font-mono">{assign.work_order_number}</div>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                      <div>{assign.workstation_name}</div>
-                      <div className="text-[0.6875rem] text-slate-400">{assign.stage_name}</div>
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-extrabold text-sm">
-                      {assign.target_quantity}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                      {assign.shift_name}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <StatusBadge status={assign.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="lg:col-span-2">
+          <h2 className="phm-section mb-3">Penugasan Aktif</h2>
+          <DataTable
+            columns={[
+              {
+                key: 'operator',
+                header: 'Operator',
+                width: '22%',
+                primary: true,
+                hideLabelOnMobile: true,
+                cell: (a) => (
+                  <div>
+                    <span className="block font-semibold text-teks">{a.operator_name}</span>
+                    <span className="phm-num mt-0.5 block text-label text-redup">
+                      {a.operator_nik}
+                    </span>
+                  </div>
+                ),
+              },
+              {
+                key: 'wo',
+                header: 'Komponen & WO',
+                width: '26%',
+                cell: (a) => (
+                  <div>
+                    <span className="block text-teks">{a.product_name}</span>
+                    <span className="phm-num mt-0.5 block text-label text-brand-aksen">
+                      {a.work_order_number}
+                    </span>
+                  </div>
+                ),
+              },
+              {
+                key: 'station',
+                header: 'Stasiun & Tahap',
+                cell: (a) => (
+                  <div>
+                    <span className="block text-teks">{a.workstation_name}</span>
+                    <span className="mt-0.5 block text-label text-redup">{a.stage_name}</span>
+                  </div>
+                ),
+              },
+              {
+                key: 'target',
+                header: 'Target',
+                width: '110px',
+                align: 'right',
+                cell: (a) => (
+                  <span className="phm-num font-semibold text-teks">
+                    {a.target_quantity}
+                    <span className="ml-1 text-label font-normal text-redup">pcs</span>
+                  </span>
+                ),
+              },
+              {
+                key: 'shift',
+                header: 'Shift',
+                width: '120px',
+                cell: (a) => <span className="text-teks">{a.shift_name}</span>,
+              },
+              {
+                key: 'status',
+                header: 'Status',
+                width: '160px',
+                align: 'right',
+                hideLabelOnMobile: true,
+                cell: (a) => <StatusBadge status={a.status} />,
+              },
+            ]}
+            rows={assignments}
+            getKey={(a) => a.id}
+            emptyIcon={Users}
+            emptyTitle="Belum ada penugasan"
+            emptyMessage="Penugasan yang Anda buat akan langsung muncul di halaman Tugas Produksi operator."
+          />
         </div>
       </div>
     </AppLayout>

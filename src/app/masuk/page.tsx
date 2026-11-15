@@ -4,15 +4,12 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { DEMO_CREDENTIALS } from '../../data/mockData';
 import {
-  ShieldCheck,
   User,
   Lock,
   Eye,
   EyeOff,
   AlertCircle,
-  CheckCircle2,
-  Copy,
-  Info,
+  Check,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
@@ -26,18 +23,18 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showDemoGuide, setShowDemoGuide] = useState(true);
-  const [copiedNik, setCopiedNik] = useState<string | null>(null);
+  const [filledNik, setFilledNik] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     if (!nik.trim()) {
-      setError('Silakan masukkan Nomor Induk Karyawan (NIK).');
+      setError('Masukkan Nomor Induk Karyawan Anda.');
       return;
     }
     if (!password.trim()) {
-      setError('Silakan masukkan kata sandi Anda.');
+      setError('Masukkan kata sandi Anda.');
       return;
     }
 
@@ -45,195 +42,194 @@ export default function LoginPage() {
     try {
       const res = await login(nik, password);
       if (!res.success) {
-        setError(res.message || 'Gagal masuk. Periksa NIK dan kata sandi Anda.');
+        setError(res.message || 'NIK atau kata sandi tidak cocok. Silakan periksa kembali.');
       }
-    } catch (err) {
+    } catch {
       setError('Terjadi kesalahan pada sistem. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleApplyCredential = (credNik: string, credPass: string) => {
+  const applyCredential = (credNik: string, credPass: string) => {
     setNik(credNik);
     setPassword(credPass);
     setError(null);
-    setCopiedNik(credNik);
-    setTimeout(() => setCopiedNik(null), 2000);
+    setFilledNik(credNik);
+    setTimeout(() => setFilledNik(null), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0F1E36] to-[#1B365D] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#0077C8] selection:text-white">
-      {/* Brand Header */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0077C8] text-white shadow-xl shadow-blue-500/20 mb-4 ring-4 ring-white/10">
-          <ShieldCheck className="w-9 h-9" />
-        </div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">PHM ONE</h1>
-        <p className="mt-1 text-sm text-blue-200">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-navy px-4 py-10">
+      {/* ------------------------------- MEREK ------------------------------ */}
+      <header className="mb-7 text-center">
+        <span className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-kartu bg-brand text-xl font-bold text-brand-teks">
+          P1
+        </span>
+        <h1 className="text-2xl font-bold tracking-tight text-white">PHM One</h1>
+        <p className="mt-1 text-isi text-white/70">
           Sistem Operasi Manufaktur PT Putra Hatim Mandiri
         </p>
-      </div>
+      </header>
 
-      {/* Main Login Card */}
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-[#1E293B] py-8 px-6 shadow-2xl rounded-2xl sm:px-10 border border-slate-200/80 dark:border-slate-700">
-          <div className="mb-6">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Masuk ke Akun</h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Silakan masukkan Nomor Induk Karyawan dan kata sandi Anda.
-            </p>
-          </div>
+      <div className="w-full max-w-[26rem]">
+        {/* ------------------------------ FORM ----------------------------- */}
+        <div className="phm-card">
+          <h2 className="phm-section">Masuk ke Akun</h2>
+          <p className="phm-helper mt-1">
+            Gunakan Nomor Induk Karyawan dari perusahaan.
+          </p>
 
           {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-start gap-3 text-rose-800 dark:text-rose-200 text-xs sm:text-sm animate-in fade-in">
-              <AlertCircle className="w-5 h-5 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" />
+            <div
+              role="alert"
+              className="mt-5 flex items-start gap-2.5 rounded-kontrol bg-kritis-latar p-3 text-isi text-kritis-teks"
+            >
+              <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="mt-5 space-y-4">
             <div>
               <label htmlFor="nik" className="phm-label">
-                Nomor Induk Karyawan (NIK)
+                Nomor Induk Karyawan
               </label>
-              <div className="relative rounded-md shadow-xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <User className="w-4 h-4" />
-                </div>
+              <div className="relative">
+                <User
+                  className="pointer-events-none absolute left-3 top-1/2 h-[1.125rem] w-[1.125rem] -translate-y-1/2 text-redup"
+                  aria-hidden="true"
+                />
                 <input
                   id="nik"
                   type="text"
                   value={nik}
                   onChange={(e) => setNik(e.target.value)}
-                  placeholder="Contoh: PHM-OP-001"
-                  className="phm-input pl-10 uppercase tracking-wider font-medium"
+                  placeholder="PHM-OP-001"
+                  className="phm-input pl-10 font-medium uppercase tracking-wide"
                   autoComplete="username"
+                  autoCapitalize="characters"
+                  spellCheck={false}
                   required
                 />
               </div>
-              <p className="phm-helper mt-1.5 text-[0.8rem]">
-                Format: <span className="font-mono text-slate-700 dark:text-slate-300">PHM-[ROLE]-001</span>
-              </p>
             </div>
 
             <div>
               <label htmlFor="password" className="phm-label">
                 Kata Sandi
               </label>
-              <div className="relative rounded-md shadow-xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                  <Lock className="w-4 h-4" />
-                </div>
+              <div className="relative">
+                <Lock
+                  className="pointer-events-none absolute left-3 top-1/2 h-[1.125rem] w-[1.125rem] -translate-y-1/2 text-redup"
+                  aria-hidden="true"
+                />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Masukkan kata sandi"
-                  className="phm-input pl-10 pr-10"
+                  className="phm-input pl-10 pr-12"
                   autoComplete="current-password"
                   required
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-1 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-kontrol text-redup transition-colors hover:text-brand-aksen"
                   aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+                  ) : (
+                    <Eye className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 dark:text-slate-300">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                  className="w-4 h-4 rounded border-slate-300 text-[#0077C8] focus:ring-[#0077C8]"
-                />
-                <span>Ingat perangkat ini</span>
-              </label>
-              <span className="text-slate-400 text-xs">Versi 1.0 (Next.js)</span>
-            </div>
+            <label className="flex min-h-[44px] cursor-pointer items-center gap-2.5 text-isi text-teks">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+                className="h-[1.125rem] w-[1.125rem] rounded border-garis-kuat accent-[color:var(--brand)]"
+              />
+              <span>Ingat perangkat ini</span>
+            </label>
 
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-11 bg-[#0077C8] hover:bg-[#0062A3] active:bg-[#00528A] text-white font-semibold rounded-xl shadow-sm transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Memverifikasi Akun…</span>
-                  </>
-                ) : (
-                  <span>Masuk ke Sistem</span>
-                )}
-              </button>
-            </div>
+            <button type="submit" disabled={isLoading} className="phm-btn-primary w-full">
+              {isLoading ? (
+                <>
+                  <span
+                    className="h-4 w-4 animate-spin rounded-pil border-2 border-current border-t-transparent"
+                    aria-hidden="true"
+                  />
+                  <span>Memverifikasi…</span>
+                </>
+              ) : (
+                <span>Masuk</span>
+              )}
+            </button>
           </form>
         </div>
 
-        {/* Demo Credentials Guide Card */}
-        <div className="mt-6 bg-slate-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-4 text-white shadow-lg">
-          <div
-            onClick={() => setShowDemoGuide(!showDemoGuide)}
-            className="flex items-center justify-between cursor-pointer select-none"
+        {/* ------------------------- KREDENSIAL DEMO ------------------------ */}
+        <div className="mt-4 overflow-hidden rounded-kartu border border-white/15 bg-white/5">
+          <button
+            type="button"
+            onClick={() => setShowDemoGuide((v) => !v)}
+            aria-expanded={showDemoGuide}
+            className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left"
           >
-            <div className="flex items-center gap-2.5">
-              <Info className="w-4 h-4 text-amber-400 shrink-0" />
-              <span className="text-xs sm:text-sm font-semibold text-slate-200">
-                Daftar NIK & Kata Sandi Demo (Klik untuk Isi Cepat)
+            <span className="min-w-0">
+              <span className="block text-isi font-semibold text-white">
+                Akun demo per peran
               </span>
-            </div>
+              <span className="block text-label text-white/60">
+                Pilih satu untuk mengisi form otomatis
+              </span>
+            </span>
             {showDemoGuide ? (
-              <ChevronUp className="w-4 h-4 text-slate-400" />
+              <ChevronUp className="h-5 w-5 shrink-0 text-white/60" aria-hidden="true" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-slate-400" />
+              <ChevronDown className="h-5 w-5 shrink-0 text-white/60" aria-hidden="true" />
             )}
-          </div>
+          </button>
 
           {showDemoGuide && (
-            <div className="mt-3.5 pt-3 border-t border-white/10 space-y-2">
-              <p className="text-[0.75rem] text-slate-300 leading-relaxed">
-                Pilih peran di bawah ini untuk mengisi NIK & kata sandi secara otomatis ke dalam form login:
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                {DEMO_CREDENTIALS.map((item) => (
+            <div className="grid gap-1.5 border-t border-white/10 p-3 sm:grid-cols-2">
+              {DEMO_CREDENTIALS.map((item) => {
+                const isFilled = filledNik === item.nik;
+                return (
                   <button
                     key={item.nik}
                     type="button"
-                    onClick={() => handleApplyCredential(item.nik, item.password)}
-                    className="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-left transition-all flex items-center justify-between group cursor-pointer"
+                    onClick={() => applyCredential(item.nik, item.password)}
+                    className="flex items-center justify-between gap-2 rounded-kontrol border border-white/10 bg-white/5 px-3 py-2.5 text-left transition-colors hover:border-white/30 hover:bg-white/10"
                   >
-                    <div className="min-w-0 pr-2">
-                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <span className="truncate">{item.role}</span>
-                        {copiedNik === item.nik && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                        )}
-                      </div>
-                      <div className="text-[0.7rem] text-slate-300 font-mono mt-0.5 truncate">
-                        NIK: <span className="text-amber-300 font-semibold">{item.nik}</span>
-                      </div>
-                      <div className="text-[0.7rem] text-slate-400 font-mono truncate">
-                        Pass: <span className="text-slate-200">{item.password}</span>
-                      </div>
-                    </div>
-                    <div className="shrink-0 p-1.5 rounded-lg bg-white/10 group-hover:bg-[#0077C8] text-slate-300 group-hover:text-white transition-colors">
-                      <Copy className="w-3.5 h-3.5" />
-                    </div>
+                    <span className="min-w-0">
+                      <span className="block truncate text-label font-semibold text-white">
+                        {item.role}
+                      </span>
+                      <span className="mt-0.5 block truncate text-mini text-white/70">
+                        {item.nik} · {item.password}
+                      </span>
+                    </span>
+                    {isFilled && (
+                      <Check className="h-4 w-4 shrink-0 text-white" aria-hidden="true" />
+                    )}
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
           )}
         </div>
+
+        <p className="mt-4 text-center text-label text-white/50">
+          Mode demo — seluruh data bersifat fiktif.
+        </p>
       </div>
     </div>
   );

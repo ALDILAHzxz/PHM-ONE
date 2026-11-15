@@ -2,138 +2,506 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===========================================================================
+   PHM ONE — Design Tokens
+   Diturunkan dari DESIGN-PHM-REFERENSI.md (dasbor Jarwo PT Putra Hatim Mandiri).
+
+   Prinsip yang diwarisi:
+   1. SATU warna merek saja (teal/sian). Warna lain HANYA untuk status.
+   2. Nama token semantik (--brand), bukan nama warna (--indigo yang bernilai sian).
+   3. Satu angka untuk satu makna (tinggi shell ditulis sekali, dipakai di mana-mana).
+   4. Kontras diukur, bukan dikira-kira.
+
+   Penyimpangan yang disengaja dari referensi:
+   - Tema TERANG sebagai default (referensi: gelap). Alasan: aplikasi ini
+     didemonstrasikan di ruang rapat dan dipakai di lantai produksi yang terang.
+     Tema gelap tetap tersedia penuh lewat tombol di navbar.
+   - Ukuran font dinaikkan. Referensi memakai 9–10.5px untuk micro-label;
+     dokumen referensi sendiri menandainya "di bawah ambang nyaman baca".
+     Minimum di sistem ini 12px, body 15px.
+   =========================================================================== */
+
 :root {
-  --phm-navy: #1B365D;
-  --phm-blue: #0077C8;
-  --phm-surface: #FFFFFF;
-  --phm-surface-elevated: #F8FAFC;
-  --phm-surface-sunken: #F1F5F9;
-  --phm-border: #E2E8F0;
-  --phm-text: #1E293B;
-  --phm-text-secondary: #64748B;
+  /* --- permukaan --- */
+  --latar: #f5f5f7;
+  --kartu: #ffffff;
+  --kartu-dalam: #f8fafc;
+  --navy: #072a38;
+
+  /* --- teks --- */
+  --teks: #1f2937;
+  --redup: #6b7280;
+
+  /* --- garis --- */
+  --garis: #e5e7eb;
+  --garis-kuat: #cbd5e1;
+
+  /* --- merek (satu-satunya warna non-status) --- */
+  /* #0d6076 dipilih menggantikan #0e7490: teks putih di atasnya 5,5:1 (AA). */
+  --brand: #0d6076;
+  --brand-pekat: #0a4c5e;
+  --brand-muda: #cffafe;
+  --brand-redup: rgba(13, 96, 118, 0.12);
+  --brand-teks: #ffffff;
+  --brand-aksen: #0d6076;
+
+  /* --- status (hanya untuk keadaan, tidak pernah dekoratif) --- */
+  --aman: #15803d;
+  --aman-latar: #dcfce7;
+  --aman-teks: #14532d;
+  --waspada: #b45309;
+  --waspada-latar: #fef3c7;
+  --waspada-teks: #78350f;
+  --kritis: #b91c1c;
+  --kritis-latar: #fee2e2;
+  --kritis-teks: #7f1d1d;
+  --netral: #6b7280;
+  --netral-latar: #f1f5f9;
+  --netral-teks: #334155;
+
+  /* --- bentuk --- */
+  --r-kontrol: 8px;
+  --r-kartu: 12px;
+  --r-pil: 999px;
+
+  /* --- bayangan (tipis; kedalaman dari border, bukan shadow tebal) --- */
+  --sh-kartu: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  --sh-pop: 0 8px 24px rgba(15, 23, 42, 0.18);
+  --sh-modal: 0 20px 60px rgba(0, 0, 0, 0.35);
+
+  /* --- pita mode demo: sengaja tidak ikut berganti tema --- */
+  --pita-latar: #b45309;
+  --pita-teks: #ffffff;
+
+  /* --- tinggi shell: SATU angka, dipakai navbar + sidebar + drawer --- */
+  --h-pita: 30px;
+  --h-navbar: 60px;
+  --h-shell: calc(var(--h-pita) + var(--h-navbar));
+  --w-sidebar: 264px;
 }
 
 .dark {
-  --phm-surface: #0F172A;
-  --phm-surface-elevated: #1E293B;
-  --phm-surface-sunken: #020617;
-  --phm-border: #334155;
-  --phm-text: #F1F5F9;
-  --phm-text-secondary: #94A3B8;
+  --latar: #071620;
+  --kartu: #0c1c26;
+  --kartu-dalam: #091a23;
+  --navy: #04101a;
+
+  --teks: #e6f1f5;
+  --redup: #9db4c0;
+
+  --garis: rgba(255, 255, 255, 0.14);
+  --garis-kuat: rgba(255, 255, 255, 0.24);
+
+  --brand: #38bdf8;
+  --brand-pekat: #7dd3fc;
+  --brand-muda: rgba(56, 189, 248, 0.18);
+  --brand-redup: rgba(56, 189, 248, 0.14);
+  --brand-teks: #04212b;
+  --brand-aksen: #7dd3fc;
+
+  --aman: #4ade80;
+  --aman-latar: rgba(21, 128, 61, 0.22);
+  --aman-teks: #bbf7d0;
+  --waspada: #fbbf24;
+  --waspada-latar: rgba(180, 83, 9, 0.26);
+  --waspada-teks: #fde68a;
+  --kritis: #f87171;
+  --kritis-latar: rgba(185, 28, 28, 0.26);
+  --kritis-teks: #fecaca;
+  --netral: #94a3b8;
+  --netral-latar: rgba(255, 255, 255, 0.08);
+  --netral-teks: #cbd5e1;
+
+  --sh-kartu: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.2);
+  --sh-pop: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --sh-modal: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
-body {
-  color: var(--phm-text);
-  background-color: #F4F6F9;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--latar);
+    color: var(--teks);
+    /* Nol webfont — mengikuti keputusan performa dasbor Jarwo. */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Angka selalu sejajar dan tidak pernah terpotong. */
+  .tabular,
+  table td,
+  table th {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Ring fokus inset 2px — jangan hapus outline tanpa pengganti. */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
 }
 
-.dark body {
-  background-color: #0B1120;
-}
+/* ===========================================================================
+   KOMPONEN
+   =========================================================================== */
 
-/* Custom Component Utilities matching PHM Design System */
-.phm-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-}
+@layer components {
+  /* --- Kartu ------------------------------------------------------------ */
+  .phm-card {
+    background-color: var(--kartu);
+    border: 1px solid var(--garis);
+    border-radius: var(--r-kartu);
+    padding: 1.25rem;
+    box-shadow: var(--sh-kartu);
+  }
 
-.dark .phm-card {
-  background-color: #1E293B;
-  border-color: #334155;
-  color: #F1F5F9;
-}
+  @media (min-width: 640px) {
+    .phm-card {
+      padding: 1.5rem;
+    }
+  }
 
-.phm-input {
-  width: 100%;
-  border-radius: 10px;
-  border: 1px solid #CBD5E1;
-  background-color: #FFFFFF;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.9375rem;
-  color: #1E293B;
-  outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
+  .phm-card-flat {
+    background-color: var(--kartu);
+    border: 1px solid var(--garis);
+    border-radius: var(--r-kartu);
+    box-shadow: var(--sh-kartu);
+  }
 
-.dark .phm-input {
-  background-color: #0F172A;
-  border-color: #334155;
-  color: #F1F5F9;
-}
+  /* --- Tipografi -------------------------------------------------------- */
+  .phm-title {
+    font-size: 1.375rem;
+    line-height: 1.25;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--teks);
+  }
 
-.phm-input:focus {
-  border-color: #0077C8;
-  box-shadow: 0 0 0 3px rgba(0, 119, 200, 0.18);
-}
+  @media (min-width: 640px) {
+    .phm-title {
+      font-size: 1.625rem;
+    }
+  }
 
-.phm-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 0.375rem;
-}
+  .phm-section {
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--teks);
+  }
 
-.dark .phm-label {
-  color: #CBD5E1;
-}
+  .phm-card-title {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--teks);
+  }
 
-.phm-helper {
-  font-size: 0.8125rem;
-  color: #64748B;
-}
+  .phm-helper {
+    font-size: 0.875rem;
+    color: var(--redup);
+  }
 
-.dark .phm-helper {
-  color: #94A3B8;
-}
+  /* UPPERCASE micro-label — satu-satunya text-transform yang dipakai. */
+  .phm-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--redup);
+  }
 
-.phm-btn-primary {
-  background-color: #0077C8;
-  color: #FFFFFF;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 0.625rem 1.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.15s ease;
-}
+  /* --- Kontrol form ----------------------------------------------------- */
+  .phm-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--teks);
+    margin-bottom: 0.375rem;
+  }
 
-.phm-btn-primary:hover {
-  background-color: #0062A3;
-}
+  .phm-input,
+  .phm-select,
+  .phm-textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 0.9375rem;
+    padding: 0.625rem 0.75rem;
+    min-height: 44px;
+    border: 1px solid var(--garis-kuat);
+    border-radius: var(--r-kontrol);
+    background-color: var(--kartu);
+    color: var(--teks);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
 
-.phm-btn-secondary {
-  background-color: #FFFFFF;
-  color: #334155;
-  border: 1px solid #CBD5E1;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 0.625rem 1.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.15s ease;
-}
+  .phm-textarea {
+    min-height: 88px;
+    resize: vertical;
+  }
 
-.dark .phm-btn-secondary {
-  background-color: #1E293B;
-  border-color: #475569;
-  color: #E2E8F0;
-}
+  .phm-input::placeholder,
+  .phm-textarea::placeholder {
+    color: var(--redup);
+    opacity: 1;
+  }
 
-.phm-btn-secondary:hover {
-  background-color: #F8FAFC;
-  border-color: #94A3B8;
-}
+  .phm-input:focus,
+  .phm-select:focus,
+  .phm-textarea:focus {
+    border-color: var(--brand);
+    box-shadow: inset 0 0 0 1px var(--brand);
+  }
 
-.dark .phm-btn-secondary:hover {
-  background-color: #334155;
+  /* --- Tombol ----------------------------------------------------------- */
+  /* Setiap varian tombol bersifat MANDIRI: ukuran, padding, dan radius ikut
+     di dalamnya. Dengan begitu `phm-btn-primary` yang dipakai sendirian di
+     banyak halaman tetap tampil utuh, tanpa harus menambahkan kelas dasar. */
+  .phm-btn,
+  .phm-btn-primary,
+  .phm-btn-secondary,
+  .phm-btn-ghost,
+  .phm-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    padding: 0.5625rem 1rem;
+    min-height: 44px;
+    border-radius: var(--r-kontrol);
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  }
+
+  .phm-btn:disabled,
+  .phm-btn-primary:disabled,
+  .phm-btn-secondary:disabled,
+  .phm-btn-danger:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .phm-btn-primary {
+    background-color: var(--brand);
+    color: var(--brand-teks);
+  }
+
+  .phm-btn-primary:hover:not(:disabled) {
+    background-color: var(--brand-pekat);
+  }
+
+  .phm-btn-secondary {
+    background-color: var(--kartu);
+    color: var(--teks);
+    border-color: var(--garis-kuat);
+  }
+
+  .phm-btn-secondary:hover:not(:disabled) {
+    border-color: var(--brand);
+    color: var(--brand-aksen);
+  }
+
+  .phm-btn-ghost {
+    background-color: transparent;
+    color: var(--brand-aksen);
+  }
+
+  .phm-btn-ghost:hover:not(:disabled) {
+    background-color: var(--brand-redup);
+  }
+
+  .phm-btn-danger {
+    background-color: var(--kritis);
+    color: #ffffff;
+  }
+
+  .phm-btn-danger:hover:not(:disabled) {
+    filter: brightness(0.92);
+  }
+
+  /* Tombol ikon — target sentuh 44px, ikon 20px. */
+  .phm-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-kontrol);
+    color: var(--redup);
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .phm-icon-btn:hover {
+    background-color: var(--brand-redup);
+    color: var(--brand-aksen);
+  }
+
+  /* --- Badge status ----------------------------------------------------- */
+  .phm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.1875rem 0.625rem;
+    border-radius: var(--r-pil);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .phm-badge-aman {
+    background-color: var(--aman-latar);
+    color: var(--aman-teks);
+  }
+
+  .phm-badge-waspada {
+    background-color: var(--waspada-latar);
+    color: var(--waspada-teks);
+  }
+
+  .phm-badge-kritis {
+    background-color: var(--kritis-latar);
+    color: var(--kritis-teks);
+  }
+
+  .phm-badge-brand {
+    background-color: var(--brand-muda);
+    color: var(--brand-aksen);
+  }
+
+  .phm-badge-netral {
+    background-color: var(--netral-latar);
+    color: var(--netral-teks);
+  }
+
+  /* --- Tabel ------------------------------------------------------------ */
+  .phm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+  }
+
+  .phm-table thead th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--redup);
+    background-color: var(--kartu-dalam);
+    border-bottom: 1px solid var(--garis);
+    white-space: nowrap;
+  }
+
+  .phm-table tbody td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--garis);
+    vertical-align: top;
+    color: var(--teks);
+  }
+
+  .phm-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .phm-table tbody tr:hover td {
+    background-color: var(--brand-redup);
+  }
+
+  /* Kolom angka tidak pernah dibungkus baris baru. */
+  .phm-num {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Pita mode demo ---------------------------------------------------- */
+  .phm-pita {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: var(--h-pita);
+    padding: 0 1rem;
+    background-color: var(--pita-latar);
+    color: var(--pita-teks);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* --- Navigasi sidebar -------------------------------------------------- */
+  .phm-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--r-kontrol);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--teks);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .phm-nav-link:hover {
+    background-color: var(--brand-redup);
+    color: var(--brand-aksen);
+  }
+
+  .phm-nav-link-active {
+    background-color: var(--brand-muda);
+    color: var(--brand-aksen);
+    font-weight: 600;
+    /* Penanda baris aktif di sisi kiri — bukan background mencolok. */
+    box-shadow: inset 3px 0 0 var(--brand);
+  }
+
+  /* --- Scrollbar tipis --------------------------------------------------- */
+  .phm-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--garis-kuat) transparent;
+  }
+
+  .phm-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .phm-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--garis-kuat);
+    border-radius: var(--r-pil);
+  }
 }

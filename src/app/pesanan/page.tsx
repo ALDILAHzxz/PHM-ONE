@@ -1,12 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { AppLayout } from '../../components/layout/AppLayout';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+import { DataTable, DataColumn } from '../../components/ui/DataTable';
+import { ProgressBar } from '../../components/ui/ProgressBar';
 import { useOperations } from '../../context/OperationsContext';
-import Link from 'next/link';
-import { PlusCircle, Search, Filter, ArrowRight } from 'lucide-react';
+import { CustomerOrder } from '../../types';
+import { PlusCircle, Search, Package } from 'lucide-react';
 
 export default function OrdersListPage() {
   const { orders, getOrderProductionProgress } = useOperations();
@@ -14,124 +17,143 @@ export default function OrdersListPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
 
   const filteredOrders = orders.filter((o) => {
+    const q = search.toLowerCase();
     const matchQuery =
-      o.order_number.toLowerCase().includes(search.toLowerCase()) ||
-      o.partner_name.toLowerCase().includes(search.toLowerCase()) ||
-      o.product_name.toLowerCase().includes(search.toLowerCase()) ||
-      o.po_number.toLowerCase().includes(search.toLowerCase());
+      o.order_number.toLowerCase().includes(q) ||
+      o.partner_name.toLowerCase().includes(q) ||
+      o.product_name.toLowerCase().includes(q) ||
+      o.po_number.toLowerCase().includes(q);
 
     const matchStatus = statusFilter === 'ALL' || o.status === statusFilter;
     return matchQuery && matchStatus;
   });
 
+  const columns: DataColumn<CustomerOrder>[] = [
+    {
+      key: 'partner',
+      header: 'Mitra & Pesanan',
+      width: '28%',
+      primary: true,
+      hideLabelOnMobile: true,
+      cell: (o) => (
+        <div>
+          <span className="block font-semibold text-teks">{o.partner_name}</span>
+          <span className="phm-num mt-0.5 block text-label text-redup">
+            <span className="text-brand-aksen">{o.order_number}</span> · PO {o.po_number}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'product',
+      header: 'Produk',
+      width: '22%',
+      cell: (o) => <span className="text-teks">{o.product_name}</span>,
+    },
+    {
+      key: 'qty',
+      header: 'Dipesan',
+      width: '110px',
+      align: 'right',
+      cell: (o) => (
+        <span className="phm-num font-semibold text-teks">
+          {o.quantity}
+          <span className="ml-1 text-label font-normal text-redup">pcs</span>
+        </span>
+      ),
+    },
+    {
+      key: 'progress',
+      header: 'Produksi Terverifikasi',
+      width: '190px',
+      cell: (o) => {
+        const prog = getOrderProductionProgress(o.id);
+        return (
+          <ProgressBar value={prog.verified} max={prog.target} caption={`${prog.percentage}%`} />
+        );
+      },
+    },
+    {
+      key: 'due',
+      header: 'Tenggat',
+      width: '130px',
+      cell: (o) => <span className="phm-num text-teks">{o.requested_delivery_date}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      width: '180px',
+      align: 'right',
+      hideLabelOnMobile: true,
+      cell: (o) => <StatusBadge status={o.status} />,
+    },
+  ];
+
   return (
     <AppLayout>
       <PageHeader
-        title="Daftar Pesanan Mitra"
-        description="Kelola dan pantau seluruh pesanan komponen presisi dari mitra industri PT PHM."
+        title="Pesanan Mitra"
+        description="Seluruh pesanan komponen dari mitra industri PT Putra Hatim Mandiri."
         action={
-          <Link href="/pesanan/tambah" className="phm-btn-primary text-xs">
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Tambah Pesanan Baru</span>
+          <Link href="/pesanan/tambah" className="phm-btn-primary">
+            <PlusCircle className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+            <span>Tambah Pesanan</span>
           </Link>
         }
       />
 
-      {/* Filter and Search Bar */}
-      <div className="phm-card mb-6 p-4">
-        <div className="flex flex-col sm:flex-row gap-3">
+      <div className="phm-card mb-5">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <label htmlFor="cari-pesanan" className="sr-only">
+              Cari pesanan
+            </label>
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-[1.125rem] w-[1.125rem] -translate-y-1/2 text-redup"
+              aria-hidden="true"
+            />
             <input
-              type="text"
+              id="cari-pesanan"
+              type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nomor pesanan, PO, mitra, atau nama produk…"
-              className="phm-input pl-10 text-xs"
+              placeholder="Cari nomor pesanan, PO, mitra, atau produk…"
+              className="phm-input pl-10"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="phm-input sm:w-48 text-xs"
-          >
-            <option value="ALL">Semua Status</option>
-            <option value="confirmed">Terkonfirmasi</option>
-            <option value="in_production">Sedang Diproduksi</option>
-            <option value="ready_to_ship">Siap Dikirim</option>
-            <option value="completed">Selesai</option>
-          </select>
+          <div className="sm:w-56">
+            <label htmlFor="filter-status" className="sr-only">
+              Filter status
+            </label>
+            <select
+              id="filter-status"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="phm-select"
+            >
+              <option value="ALL">Semua status</option>
+              <option value="confirmed">Terkonfirmasi</option>
+              <option value="in_production">Sedang Diproduksi</option>
+              <option value="ready_to_ship">Siap Dikirim</option>
+              <option value="partially_shipped">Sebagian Terkirim</option>
+              <option value="completed">Selesai</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Orders Table */}
-      <div className="phm-card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-              <tr>
-                <th className="py-3 px-4">No. Pesanan</th>
-                <th className="py-3 px-4">Mitra Pemesan & PO</th>
-                <th className="py-3 px-4">Produk Komponen</th>
-                <th className="py-3 px-4 text-center">Jumlah Target</th>
-                <th className="py-3 px-4">Progres Verifikasi</th>
-                <th className="py-3 px-4">Tenggat Waktu</th>
-                <th className="py-3 px-4 text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {filteredOrders.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400">
-                    Tidak ada pesanan yang sesuai dengan filter pencarian.
-                  </td>
-                </tr>
-              ) : (
-                filteredOrders.map((order) => {
-                  const prog = getOrderProductionProgress(order.id);
-                  return (
-                    <tr key={order.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono font-bold text-[#0077C8]">
-                        {order.order_number}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-slate-900 dark:text-white">{order.partner_name}</div>
-                        <div className="text-[0.6875rem] text-slate-400 font-mono">{order.po_number}</div>
-                      </td>
-                      <td className="py-3.5 px-4 font-semibold text-slate-800 dark:text-slate-200">
-                        {order.product_name}
-                      </td>
-                      <td className="py-3.5 px-4 text-center font-extrabold text-sm text-slate-900 dark:text-white">
-                        {order.quantity} pcs
-                      </td>
-                      <td className="py-3.5 px-4 min-w-[140px]">
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-[0.6875rem] text-slate-500">
-                            <span>{prog.verified} / {prog.target}</span>
-                            <span className="font-bold">{prog.percentage}%</span>
-                          </div>
-                          <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
-                            <div
-                              className="h-full bg-emerald-500 rounded-full"
-                              style={{ width: `${prog.percentage}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-medium">
-                        {order.requested_delivery_date}
-                      </td>
-                      <td className="py-3.5 px-4 text-right">
-                        <StatusBadge status={order.status} />
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable
+        columns={columns}
+        rows={filteredOrders}
+        getKey={(o) => o.id}
+        emptyIcon={Package}
+        emptyTitle="Tidak ada pesanan"
+        emptyMessage={
+          search || statusFilter !== 'ALL'
+            ? 'Tidak ada pesanan yang cocok dengan pencarian Anda.'
+            : 'Belum ada pesanan mitra yang tercatat.'
+        }
+      />
     </AppLayout>
   );
 }

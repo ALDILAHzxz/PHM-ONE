@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AppLayout } from '../../../components/layout/AppLayout';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
+import { DataTable } from '../../../components/ui/DataTable';
 import { useAuth } from '../../../context/AuthContext';
 import { useOperations } from '../../../context/OperationsContext';
 import { PlusCircle, Layers, CheckCircle2 } from 'lucide-react';
@@ -56,12 +57,12 @@ export default function WorkOrderManagerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Create WO Form */}
         <div className="phm-card lg:col-span-1">
-          <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-base font-bold text-teks mb-4">
             Terbitkan Work Order Baru
           </h2>
 
           {isSuccess && (
-            <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 text-xs font-semibold flex items-center gap-2">
+            <div className="mb-4 p-3 rounded-kontrol bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 text-label font-semibold flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Work Order berhasil diterbitkan!</span>
             </div>
@@ -73,7 +74,7 @@ export default function WorkOrderManagerPage() {
               <select
                 value={orderId}
                 onChange={(e) => setOrderId(Number(e.target.value))}
-                className="phm-input text-xs"
+                className="phm-input text-label"
                 required
               >
                 {orders.map((o) => (
@@ -91,7 +92,7 @@ export default function WorkOrderManagerPage() {
                 value={targetQuantity}
                 onChange={(e) => setTargetQuantity(e.target.value === '' ? '' : Number(e.target.value))}
                 placeholder={selectedOrder ? `Maksimal: ${selectedOrder.quantity}` : '500'}
-                className="phm-input text-xs font-bold"
+                className="phm-input text-label font-bold"
                 min={1}
                 required
               />
@@ -103,7 +104,7 @@ export default function WorkOrderManagerPage() {
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as any)}
-                  className="phm-input text-xs"
+                  className="phm-input text-label"
                 >
                   <option value="low">Rendah</option>
                   <option value="normal">Normal</option>
@@ -118,7 +119,7 @@ export default function WorkOrderManagerPage() {
                   type="date"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className="phm-input text-xs"
+                  className="phm-input text-label"
                   required
                 />
               </div>
@@ -131,68 +132,90 @@ export default function WorkOrderManagerPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Catatan pengerjaan…"
                 rows={2}
-                className="phm-input text-xs"
+                className="phm-input text-label"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full h-10 bg-[#0077C8] hover:bg-[#0062A3] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              className="w-full h-10 bg-brand hover:bg-brand-pekat text-white font-semibold text-label rounded-kontrol flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <PlusCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
               <span>Rilis Work Order</span>
             </button>
           </form>
         </div>
 
         {/* Existing WOs Table */}
-        <div className="phm-card lg:col-span-2 overflow-hidden p-0">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white">
-              Daftar Work Order Aktif
-            </h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-                <tr>
-                  <th className="py-3 px-4">No. Work Order</th>
-                  <th className="py-3 px-4">Komponen & Referensi</th>
-                  <th className="py-3 px-4 text-center">Target (pcs)</th>
-                  <th className="py-3 px-4">Prioritas</th>
-                  <th className="py-3 px-4">Batas Waktu</th>
-                  <th className="py-3 px-4 text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {workOrders.map((wo) => (
-                  <tr key={wo.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#0077C8]">
-                      {wo.work_order_number}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-slate-900 dark:text-white">{wo.product_name}</div>
-                      <div className="text-[0.6875rem] text-slate-400 font-mono">{wo.order_number}</div>
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-extrabold text-sm">
-                      {wo.target_quantity}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <span className="text-[0.6875rem] font-bold uppercase px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                        {wo.priority}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                      {wo.deadline}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <StatusBadge status={wo.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="lg:col-span-2">
+          <h2 className="phm-section mb-3">Daftar Work Order Aktif</h2>
+          <DataTable
+            columns={[
+              {
+                key: 'wo',
+                header: 'Work Order & Komponen',
+                width: '34%',
+                primary: true,
+                hideLabelOnMobile: true,
+                cell: (wo) => (
+                  <div>
+                    <span className="block font-semibold text-teks">{wo.product_name}</span>
+                    <span className="phm-num mt-0.5 block text-label text-redup">
+                      <span className="text-brand-aksen">{wo.work_order_number}</span> ·{' '}
+                      {wo.order_number}
+                    </span>
+                  </div>
+                ),
+              },
+              {
+                key: 'target',
+                header: 'Target',
+                width: '110px',
+                align: 'right',
+                cell: (wo) => (
+                  <span className="phm-num font-semibold text-teks">
+                    {wo.target_quantity}
+                    <span className="ml-1 text-label font-normal text-redup">pcs</span>
+                  </span>
+                ),
+              },
+              {
+                key: 'priority',
+                header: 'Prioritas',
+                width: '130px',
+                cell: (wo) => (
+                  <span
+                    className={`phm-badge ${
+                      wo.priority === 'urgent' || wo.priority === 'high'
+                        ? 'phm-badge-waspada'
+                        : 'phm-badge-netral'
+                    }`}
+                  >
+                    {wo.priority}
+                  </span>
+                ),
+              },
+              {
+                key: 'deadline',
+                header: 'Batas Waktu',
+                width: '140px',
+                cell: (wo) => <span className="phm-num text-teks">{wo.deadline}</span>,
+              },
+              {
+                key: 'status',
+                header: 'Status',
+                width: '160px',
+                align: 'right',
+                hideLabelOnMobile: true,
+                cell: (wo) => <StatusBadge status={wo.status} />,
+              },
+            ]}
+            rows={workOrders}
+            getKey={(wo) => wo.id}
+            emptyIcon={Layers}
+            emptyTitle="Belum ada work order"
+            emptyMessage="Work order yang Anda buat akan muncul di sini."
+          />
         </div>
       </div>
     </AppLayout>

@@ -33,8 +33,8 @@ export default function DriverDeliveriesPage() {
       {activeShipments.length === 0 ? (
         <div className="phm-card text-center py-12">
           <Truck className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-slate-800 dark:text-white">Tidak ada pengiriman aktif</h3>
-          <p className="text-xs text-slate-500 mt-1">Seluruh surat jalan telah diantarkan ke tujuan atau belum ada penugasan baru.</p>
+          <h3 className="text-base font-bold text-teks dark:text-white">Tidak ada pengiriman aktif</h3>
+          <p className="text-label text-redup mt-1">Seluruh surat jalan telah diantarkan ke tujuan atau belum ada penugasan baru.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -42,32 +42,32 @@ export default function DriverDeliveriesPage() {
             <div key={s.id} className="phm-card flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-xs font-bold text-[#0077C8]">{s.shipment_number}</span>
+                  <span className="font-mono text-label font-bold text-brand-aksen">{s.shipment_number}</span>
                   <StatusBadge status={s.status} />
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+                <h3 className="text-base font-bold text-teks mb-1">
                   {s.customer_name}
                 </h3>
-                <div className="text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  {s.product_name} · <strong className="text-slate-900 dark:text-white">{s.quantity} pcs</strong>
+                <div className="text-label font-semibold text-teks">
+                  {s.product_name} · <strong className="text-teks">{s.quantity} pcs</strong>
                 </div>
 
-                <div className="my-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1 text-xs">
-                  <div className="text-slate-500">Tujuan: <strong className="text-slate-800 dark:text-slate-200">{s.destination_address}</strong></div>
-                  <div className="text-slate-500">Kendaraan: <strong className="text-slate-800 dark:text-slate-200">{s.vehicle_plate}</strong></div>
-                  {s.notes && <div className="text-slate-500 italic mt-1">&ldquo;{s.notes}&rdquo;</div>}
+                <div className="my-3 p-3 bg-kartu-dalam rounded-kontrol border border-garis space-y-1 text-label">
+                  <div className="text-redup">Tujuan: <strong className="text-teks">{s.destination_address}</strong></div>
+                  <div className="text-redup">Kendaraan: <strong className="text-teks">{s.vehicle_plate}</strong></div>
+                  {s.notes && <div className="text-redup italic mt-1">&ldquo;{s.notes}&rdquo;</div>}
                 </div>
               </div>
 
               {/* Status Action Buttons */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2">
+              <div className="pt-3 border-t border-garis flex flex-wrap gap-2">
                 {s.status === 'pending' && (
                   <button
                     onClick={() => handleUpdate(s.id, 'loaded')}
-                    className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-2 bg-brand hover:bg-brand-pekat text-white rounded-kontrol text-label font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <PackageCheck className="w-3.5 h-3.5" />
+                    <PackageCheck className="h-[1.125rem] w-[1.125rem] shrink-0" />
                     <span>Barang Selesai Dimuat</span>
                   </button>
                 )}
@@ -75,9 +75,9 @@ export default function DriverDeliveriesPage() {
                 {s.status === 'loaded' && (
                   <button
                     onClick={() => handleUpdate(s.id, 'in_transit')}
-                    className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 py-2 bg-brand hover:bg-brand-pekat text-white rounded-kontrol text-label font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Navigation className="w-3.5 h-3.5" />
+                    <Navigation className="h-[1.125rem] w-[1.125rem] shrink-0" />
                     <span>Berangkat Mengantar (Dalam Rute)</span>
                   </button>
                 )}
@@ -86,14 +86,14 @@ export default function DriverDeliveriesPage() {
                   <>
                     <button
                       onClick={() => handleUpdate(s.id, 'delivered')}
-                      className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-kontrol text-label font-semibold flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <CheckCircle2 className="h-[1.125rem] w-[1.125rem] shrink-0" />
                       <span>Konfirmasi Barang Diterima Customer</span>
                     </button>
                     <button
                       onClick={() => handleUpdate(s.id, 'failed')}
-                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl text-xs font-semibold cursor-pointer border border-rose-200"
+                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-kontrol text-label font-semibold cursor-pointer border border-rose-200"
                     >
                       <span>Gagal Antar</span>
                     </button>

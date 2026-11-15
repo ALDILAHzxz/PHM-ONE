@@ -163,7 +163,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         hasPermission,
       }}
     >
-      {isLoaded ? children : <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center text-slate-500">Memuat sistem PHM One…</div>}
+      {isLoaded ? (
+        children
+      ) : (
+        <div className="flex min-h-screen items-center justify-center bg-latar text-redup">
+          Memuat sistem PHM One…
+        </div>
+      )}
     </AuthContext.Provider>
   );
 };

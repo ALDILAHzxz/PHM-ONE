@@ -61,19 +61,19 @@ export default function AddOrderPage() {
       <div className="max-w-2xl mx-auto">
         <Link
           href="/pesanan"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4 transition-colors"
+          className="inline-flex items-center gap-1.5 text-label font-semibold text-redup hover:text-teks dark:hover:text-slate-300 mb-4 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="h-[1.125rem] w-[1.125rem] shrink-0" />
           <span>Kembali ke Daftar Pesanan</span>
         </Link>
 
         <div className="phm-card">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
+          <h2 className="text-lg font-bold text-teks mb-4">
             Formulir Pesanan Penjualan
           </h2>
 
           {isSuccess && (
-            <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-xs font-semibold animate-in fade-in">
+            <div className="mb-6 p-4 rounded-kontrol bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-label font-semibold animate-in fade-in">
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
               <span>Pesanan berhasil disimpan! Mengalihkan ke daftar pesanan…</span>
             </div>
@@ -157,7 +157,7 @@ export default function AddOrderPage() {
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Contoh: Toleransi dimensi khusus ±0.01mm, sertifikasi uji kekerasan terlampir."
                 rows={3}
-                className="phm-input text-xs"
+                className="phm-input text-label"
               />
             </div>
 
@@ -165,9 +165,9 @@ export default function AddOrderPage() {
               <button
                 type="submit"
                 disabled={isSuccess}
-                className="w-full h-11 bg-[#0077C8] hover:bg-[#0062A3] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full h-11 bg-brand hover:bg-brand-pekat text-white font-semibold text-label rounded-kontrol flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <PlusCircle className="w-4 h-4" />
+                <PlusCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
                 <span>Simpan Pesanan & Rilis ke PPIC</span>
               </button>
             </div>

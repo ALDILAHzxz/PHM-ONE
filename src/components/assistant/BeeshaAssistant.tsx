@@ -106,83 +106,77 @@ export const BeeshaAssistant: React.FC<BeeshaAssistantProps> = ({ isOpen, onClos
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+    <div className="fixed inset-0 z-drawer flex justify-end overflow-hidden">
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-slate-900/50"
       />
 
       {/* Drawer */}
-      <div className="relative w-full max-w-md bg-white dark:bg-[#1E293B] shadow-2xl h-full flex flex-col z-10 border-l border-slate-200 dark:border-slate-800 animate-in slide-in-from-right duration-200">
-        {/* Header */}
-        <div className="p-4 bg-gradient-to-r from-[#1B365D] to-[#0077C8] text-white flex items-center justify-between shadow-xs">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="text-sm font-bold flex items-center gap-1.5">
-                <span>Beesha AI</span>
-                <span className="text-[0.625rem] px-1.5 py-0.5 rounded-full bg-white/20 text-white font-mono">
-                  v1.2
-                </span>
-              </div>
-              <div className="text-[0.6875rem] text-blue-100">Asisten Pintar Operasi PHM</div>
-            </div>
+      <div className="relative z-10 flex h-full w-full max-w-[28rem] flex-col border-l border-garis bg-kartu shadow-modal">
+        {/* Header — satu warna merek, tanpa gradien dan tanpa lencana versi. */}
+        <div className="flex items-center justify-between gap-3 border-b border-garis bg-kartu px-4 py-3">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-kontrol bg-brand text-brand-teks">
+              <Bot className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate font-semibold text-teks">Beesha</span>
+              <span className="block truncate text-label text-redup">
+                Asisten demo — menjawab dari data PHM One
+              </span>
+            </span>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            <X className="w-5 h-5" />
+          <button onClick={onClose} className="phm-icon-btn" aria-label="Tutup Beesha">
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Quick Suggestion Pills */}
-        <div className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700 flex gap-1.5 overflow-x-auto text-[0.6875rem] whitespace-nowrap">
+        <div className="phm-scroll flex gap-2 overflow-x-auto border-b border-garis bg-kartu-dalam p-3">
           <button
             onClick={() => handleSend('Cek tugas saya')}
-            className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-blue-400 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
+            className="flex shrink-0 items-center gap-1.5 rounded-pil border border-garis-kuat bg-kartu px-3 py-1.5 text-label text-teks transition-colors hover:border-brand hover:text-brand-aksen"
           >
-            <ClipboardList className="w-3 h-3 text-[#0077C8]" />
+            <ClipboardList className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Tugas Saya</span>
           </button>
           <button
             onClick={() => handleSend('Ringkasan produksi')}
-            className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-blue-400 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
+            className="flex shrink-0 items-center gap-1.5 rounded-pil border border-garis-kuat bg-kartu px-3 py-1.5 text-label text-teks transition-colors hover:border-brand hover:text-brand-aksen"
           >
-            <Sparkles className="w-3 h-3 text-amber-500" />
+            <Sparkles className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Produksi</span>
           </button>
           <button
             onClick={() => handleSend('Antrian pemeriksaan')}
-            className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-blue-400 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
+            className="flex shrink-0 items-center gap-1.5 rounded-pil border border-garis-kuat bg-kartu px-3 py-1.5 text-label text-teks transition-colors hover:border-brand hover:text-brand-aksen"
           >
-            <CheckCircle className="w-3 h-3 text-emerald-500" />
+            <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Verifikasi</span>
           </button>
           <button
             onClick={() => handleSend('Data pengiriman')}
-            className="px-2.5 py-1 rounded-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:border-blue-400 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 cursor-pointer"
+            className="flex shrink-0 items-center gap-1.5 rounded-pil border border-garis-kuat bg-kartu px-3 py-1.5 text-label text-teks transition-colors hover:border-brand hover:text-brand-aksen"
           >
-            <Truck className="w-3 h-3 text-sky-500" />
+            <Truck className="h-4 w-4 shrink-0" aria-hidden="true" />
             <span>Pengiriman</span>
           </button>
         </div>
 
         {/* Chat History */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 text-xs leading-relaxed">
+        <div className="phm-scroll flex-1 space-y-3 overflow-y-auto p-4 text-isi leading-relaxed">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl p-3 whitespace-pre-wrap ${
+                className={`max-w-[85%] rounded-kartu p-3 whitespace-pre-wrap ${
                   msg.sender === 'user'
-                    ? 'bg-[#0077C8] text-white rounded-br-xs'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-xs border border-slate-200 dark:border-slate-700'
+                    ? 'bg-brand text-brand-teks rounded-br-sm'
+                    : 'bg-kartu-dalam text-teks rounded-bl-sm border border-garis'
                 }`}
               >
                 {msg.content}
@@ -197,21 +191,21 @@ export const BeeshaAssistant: React.FC<BeeshaAssistantProps> = ({ isOpen, onClos
             e.preventDefault();
             handleSend();
           }}
-          className="p-3 bg-white dark:bg-[#1E293B] border-t border-slate-200 dark:border-slate-800 flex items-center gap-2"
+          className="p-3 bg-kartu border-t border-garis flex items-center gap-2"
         >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Tanyakan status pekerjaan atau data PHM…"
-            className="flex-1 px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:border-[#0077C8]"
+            className="phm-input flex-1"
           />
           <button
             type="submit"
-            className="p-2 rounded-xl bg-[#0077C8] hover:bg-[#0062A3] text-white transition-colors cursor-pointer"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-kontrol bg-brand text-brand-teks transition-colors hover:bg-brand-pekat"
             aria-label="Kirim pesan"
           >
-            <Send className="w-4 h-4" />
+            <Send className="h-5 w-5" aria-hidden="true" />
           </button>
         </form>
       </div>

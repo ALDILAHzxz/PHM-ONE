@@ -1,105 +1,126 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { AppLayout } from '../../../components/layout/AppLayout';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
+import { DataTable, DataColumn } from '../../../components/ui/DataTable';
 import { useAuth } from '../../../context/AuthContext';
 import { useOperations } from '../../../context/OperationsContext';
-import Link from 'next/link';
-import { History, PlusCircle, CheckCircle2, Clock, AlertTriangle } from 'lucide-react';
+import { ProductionReport } from '../../../types';
+import { PlusCircle, History } from 'lucide-react';
 
 export default function OperatorHistoryPage() {
   const { user } = useAuth();
   const { reports } = useOperations();
 
-  // Filter reports submitted by this operator (or all for admin)
   const myReports = reports.filter(
-    (r) => r.reported_by_id === user?.id || user?.roles.includes('sysadmin') || user?.roles.includes('supervisor')
+    (r) =>
+      r.reported_by_id === user?.id ||
+      user?.roles.includes('sysadmin') ||
+      user?.roles.includes('supervisor')
   );
+
+  /**
+   * Tujuh kolom sempit sebelumnya diringkas menjadi lima kolom yang punya
+   * lebar tetap. Nama komponen tidak lagi pecah jadi empat baris, dan catatan
+   * operator digabung dengan hasil review supervisor karena keduanya adalah
+   * satu percakapan tentang laporan yang sama.
+   */
+  const columns: DataColumn<ProductionReport>[] = [
+    {
+      key: 'id',
+      header: 'Laporan',
+      width: '150px',
+      cell: (r) => (
+        <div>
+          <span className="phm-num font-semibold text-teks">#{r.id}</span>
+          <span className="mt-0.5 block text-label text-redup">{r.created_at}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'job',
+      header: 'Pekerjaan',
+      width: '26%',
+      primary: true,
+      hideLabelOnMobile: true,
+      cell: (r) => (
+        <div>
+          <span className="block font-semibold text-teks">{r.product_name}</span>
+          <span className="phm-num mt-0.5 block text-label text-brand-aksen">
+            {r.work_order_number}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'qty',
+      header: 'Jumlah',
+      width: '120px',
+      align: 'right',
+      cell: (r) => (
+        <span className="phm-num text-[1.0625rem] font-bold text-teks">
+          +{r.quantity}
+          <span className="ml-1 text-label font-normal text-redup">pcs</span>
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      width: '200px',
+      hideLabelOnMobile: true,
+      cell: (r) => <StatusBadge status={r.status} />,
+    },
+    {
+      key: 'notes',
+      header: 'Catatan & Hasil Pemeriksaan',
+      cell: (r) => (
+        <div className="space-y-1.5">
+          {r.notes && <p className="text-teks">{r.notes}</p>}
+
+          {r.issue_category && (
+            <p className="text-label font-semibold text-kritis-teks">
+              Kendala: {r.issue_category}
+            </p>
+          )}
+
+          {r.reviewed_by_name ? (
+            <p className="text-label text-redup">
+              <span className="font-semibold text-teks">{r.reviewed_by_name}</span>
+              {r.review_reason ? ` — ${r.review_reason}` : ''}
+            </p>
+          ) : (
+            <p className="text-label italic text-redup">Menunggu pemeriksaan supervisor</p>
+          )}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <AppLayout>
       <PageHeader
-        title="Riwayat Laporan Produksi"
-        description="Daftar laporan hasil pengerjaan mesin yang telah dikirim beserta status verifikasinya."
+        title="Riwayat Laporan"
+        description="Hasil pengerjaan yang pernah Anda kirim beserta status pemeriksaannya."
         action={
-          <Link href="/operator/catat-hasil" className="phm-btn-primary text-xs">
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Buat Laporan Baru</span>
+          <Link href="/operator/catat-hasil" className="phm-btn phm-btn-primary">
+            <PlusCircle className="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+            <span>Buat Laporan</span>
           </Link>
         }
       />
 
-      <div className="phm-card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-              <tr>
-                <th className="py-3 px-4">ID Laporan</th>
-                <th className="py-3 px-4">Work Order & Komponen</th>
-                <th className="py-3 px-4 text-center">Jumlah (pcs)</th>
-                <th className="py-3 px-4">Status Verifikasi</th>
-                <th className="py-3 px-4">Catatan Operator</th>
-                <th className="py-3 px-4">Hasil Review Supervisor</th>
-                <th className="py-3 px-4 text-right">Waktu Lapor</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {myReports.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400">
-                    Belum ada laporan produksi yang tercatat.
-                  </td>
-                </tr>
-              ) : (
-                myReports.map((rep) => (
-                  <tr key={rep.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-300">
-                      #{rep.id}
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <div className="font-bold text-slate-900 dark:text-white">{rep.product_name}</div>
-                      <div className="text-[0.7rem] text-[#0077C8] font-mono">{rep.work_order_number}</div>
-                    </td>
-                    <td className="py-3.5 px-4 text-center">
-                      <span className="font-extrabold text-sm text-slate-800 dark:text-slate-100">
-                        +{rep.quantity}
-                      </span>
-                    </td>
-                    <td className="py-3.5 px-4">
-                      <StatusBadge status={rep.status} />
-                    </td>
-                    <td className="py-3.5 px-4 max-w-xs text-slate-600 dark:text-slate-300 truncate">
-                      {rep.notes || '—'}
-                      {rep.issue_category && (
-                        <div className="text-[0.6875rem] text-rose-600 font-semibold mt-0.5">
-                          Kendala: {rep.issue_category}
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 max-w-xs">
-                      {rep.reviewed_by_name ? (
-                        <div className="text-[0.7rem]">
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">
-                            {rep.reviewed_by_name}
-                          </span>
-                          <p className="text-slate-500 italic mt-0.5">{rep.review_reason}</p>
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 italic">Menunggu giliran</span>
-                      )}
-                    </td>
-                    <td className="py-3.5 px-4 text-right text-slate-400 text-[0.7rem]">
-                      {rep.created_at}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable
+        columns={columns}
+        rows={myReports}
+        getKey={(r) => r.id}
+        emptyIcon={History}
+        emptyTitle="Belum ada laporan"
+        emptyMessage="Hasil pekerjaan yang Anda catat akan muncul di sini beserta status pemeriksaannya."
+      />
     </AppLayout>
   );
 }

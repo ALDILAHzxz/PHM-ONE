@@ -1,5 +1,10 @@
 import type { Config } from 'tailwindcss';
 
+/**
+ * Token dipetakan ke CSS custom property, bukan nilai hex langsung.
+ * Akibatnya satu kelas seperti `bg-kartu` bekerja di tema terang dan gelap
+ * tanpa perlu menulis varian `dark:` di setiap elemen.
+ */
 const config: Config = {
   darkMode: 'class',
   content: [
@@ -10,35 +15,74 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        phm: {
-          navy: '#1B365D',
-          'navy-dark': '#11223B',
-          blue: '#0077C8',
-          'blue-hover': '#0062A3',
-          'blue-light': '#E5F2FF',
-          surface: '#FFFFFF',
-          'surface-elevated': '#F8FAFC',
-          'surface-sunken': '#F1F5F9',
-          border: '#E2E8F0',
-          text: '#1E293B',
-          'text-secondary': '#64748B',
-          success: '#059669',
-          warning: '#D97706',
-          danger: '#DC2626',
-          info: '#0284C7',
+        latar: 'var(--latar)',
+        kartu: 'var(--kartu)',
+        'kartu-dalam': 'var(--kartu-dalam)',
+        navy: 'var(--navy)',
+        teks: 'var(--teks)',
+        redup: 'var(--redup)',
+        garis: 'var(--garis)',
+        'garis-kuat': 'var(--garis-kuat)',
+        brand: {
+          DEFAULT: 'var(--brand)',
+          pekat: 'var(--brand-pekat)',
+          muda: 'var(--brand-muda)',
+          redup: 'var(--brand-redup)',
+          teks: 'var(--brand-teks)',
+          aksen: 'var(--brand-aksen)',
+        },
+        aman: {
+          DEFAULT: 'var(--aman)',
+          latar: 'var(--aman-latar)',
+          teks: 'var(--aman-teks)',
+        },
+        waspada: {
+          DEFAULT: 'var(--waspada)',
+          latar: 'var(--waspada-latar)',
+          teks: 'var(--waspada-teks)',
+        },
+        kritis: {
+          DEFAULT: 'var(--kritis)',
+          latar: 'var(--kritis-latar)',
+          teks: 'var(--kritis-teks)',
+        },
+        netral: {
+          DEFAULT: 'var(--netral)',
+          latar: 'var(--netral-latar)',
+          teks: 'var(--netral-teks)',
         },
       },
       borderRadius: {
-        card: '14px',
-        control: '12px',
-        badge: '8px',
-      },
-      fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        kontrol: 'var(--r-kontrol)',
+        kartu: 'var(--r-kartu)',
+        pil: 'var(--r-pil)',
       },
       boxShadow: {
-        card: '0 1px 3px rgba(0, 0, 0, 0.08)',
-        elevated: '0 4px 12px rgba(0, 0, 0, 0.05)',
+        kartu: 'var(--sh-kartu)',
+        pop: 'var(--sh-pop)',
+        modal: 'var(--sh-modal)',
+      },
+      spacing: {
+        shell: 'var(--h-shell)',
+        pita: 'var(--h-pita)',
+        navbar: 'var(--h-navbar)',
+        sidebar: 'var(--w-sidebar)',
+      },
+      fontSize: {
+        mini: ['0.75rem', { lineHeight: '1.35' }],
+        label: ['0.8125rem', { lineHeight: '1.4' }],
+        // 'isi' sengaja TIDAK bernama 'kartu': lihat catatan di atas.
+        isi: ['0.9375rem', { lineHeight: '1.45' }],
+        judul: ['1.375rem', { lineHeight: '1.25' }],
+        kpi: ['1.75rem', { lineHeight: '1.1' }],
+      },
+      transitionTimingFunction: {
+        panel: 'cubic-bezier(.22,.61,.36,1)',
+      },
+      zIndex: {
+        shell: '60',
+        drawer: '70',
+        fab: '40',
       },
     },
   },

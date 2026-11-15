@@ -74,29 +74,29 @@ function CatatHasilForm() {
     <div className="max-w-2xl mx-auto">
       <Link
         href="/operator/tugas"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 mb-4 transition-colors"
+        className="inline-flex items-center gap-1.5 text-label font-semibold text-redup hover:text-teks dark:hover:text-slate-300 mb-4 transition-colors"
       >
-        <ArrowLeft className="w-3.5 h-3.5" />
+        <ArrowLeft className="h-[1.125rem] w-[1.125rem] shrink-0" />
         <span>Kembali ke Daftar Tugas</span>
       </Link>
 
       <div className="phm-card">
-        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-1">
+        <h2 className="text-lg font-bold text-teks mb-1">
           Form Laporan Hasil Produksi
         </h2>
-        <p className="text-xs text-slate-500 mb-6">
+        <p className="text-label text-redup mb-6">
           Setiap laporan yang dikirim akan berstatus <strong className="text-amber-600">Menunggu Pemeriksaan</strong> hingga diverifikasi oleh supervisor lini.
         </p>
 
         {isSuccess && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-xs font-semibold animate-in fade-in">
+          <div className="mb-6 p-4 rounded-kontrol bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 text-emerald-800 dark:text-emerald-200 text-label font-semibold animate-in fade-in">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>Laporan produksi berhasil dicatat! Mengalihkan ke riwayat…</span>
           </div>
         )}
 
         {error && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-start gap-3 text-rose-800 dark:text-rose-200 text-xs font-semibold animate-in fade-in">
+          <div className="mb-6 p-4 rounded-kontrol bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex items-start gap-3 text-rose-800 dark:text-rose-200 text-label font-semibold animate-in fade-in">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -120,9 +120,9 @@ function CatatHasilForm() {
           </div>
 
           {selectedAssignment && (
-            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-xl border border-blue-200 dark:border-blue-900 text-xs space-y-1">
-              <div className="text-slate-500">Stasiun: <strong className="text-slate-800 dark:text-slate-200">{selectedAssignment.workstation_name}</strong></div>
-              <div className="text-slate-500">Target Shift: <strong className="text-slate-800 dark:text-slate-200">{selectedAssignment.target_quantity} pcs</strong> | Sudah Dilaporkan: <strong className="text-amber-700 dark:text-amber-400">{currentReported} pcs</strong></div>
+            <div className="p-3 bg-brand-muda rounded-kontrol border border-brand text-label space-y-1">
+              <div className="text-redup">Stasiun: <strong className="text-teks">{selectedAssignment.workstation_name}</strong></div>
+              <div className="text-redup">Target Shift: <strong className="text-teks">{selectedAssignment.target_quantity} pcs</strong> | Sudah Dilaporkan: <strong className="text-amber-700 dark:text-amber-400">{currentReported} pcs</strong></div>
             </div>
           )}
 
@@ -147,31 +147,31 @@ function CatatHasilForm() {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Contoh: Penggantian pahat bubut di unit ke-30, dimensi presisi sesuai gambar teknik."
               rows={3}
-              className="phm-input text-xs"
+              className="phm-input text-label"
             />
           </div>
 
           {/* Issue Flagging */}
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
+          <div className="pt-2 border-t border-garis">
+            <label className="flex items-center gap-2 cursor-pointer text-label font-semibold text-teks">
               <input
                 type="checkbox"
                 checked={hasIssue}
                 onChange={(e) => setHasIssue(e.target.checked)}
-                className="w-4 h-4 rounded text-[#0077C8] border-slate-300 focus:ring-[#0077C8]"
+                className="w-4 h-4 rounded text-brand-aksen border-garis-kuat focus:ring-[#0077C8]"
               />
               <span>Terdapat kendala mesin / cacat material selama proses</span>
             </label>
 
             {hasIssue && (
-              <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800 space-y-2 animate-in fade-in">
-                <label className="text-xs font-bold text-amber-900 dark:text-amber-200">
+              <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/40 rounded-kontrol border border-amber-200 dark:border-amber-800 space-y-2 animate-in fade-in">
+                <label className="text-label font-bold text-amber-900 dark:text-amber-200">
                   Kategori Kendala:
                 </label>
                 <select
                   value={issueCategory}
                   onChange={(e) => setIssueCategory(e.target.value)}
-                  className="phm-input text-xs"
+                  className="phm-input text-label"
                 >
                   <option value="MATERIAL_DEFECT">Cacat Material / Bahan Baku Rusak</option>
                   <option value="MACHINE_BREAKDOWN">Mesin Mogok / Kerusakan Mekanikal</option>
@@ -187,9 +187,9 @@ function CatatHasilForm() {
             <button
               type="submit"
               disabled={isSuccess}
-              className="w-full h-11 bg-[#0077C8] hover:bg-[#0062A3] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="w-full h-11 bg-brand hover:bg-brand-pekat text-white font-semibold text-label rounded-kontrol flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
-              <Send className="w-4 h-4" />
+              <Send className="h-[1.125rem] w-[1.125rem] shrink-0" />
               <span>Kirim Laporan ke Supervisor</span>
             </button>
           </div>
@@ -206,7 +206,7 @@ export default function OperatorReportCreatePage() {
         title="Catat Hasil Produksi"
         description="Laporkan jumlah unit yang selesai diproses pada lini manufaktur."
       />
-      <Suspense fallback={<div className="text-xs text-slate-400">Memuat formulir…</div>}>
+      <Suspense fallback={<div className="text-label text-redup">Memuat formulir…</div>}>
         <CatatHasilForm />
       </Suspense>
     </AppLayout>

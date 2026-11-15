@@ -4,76 +4,91 @@ import React from 'react';
 import { AppLayout } from '../../../components/layout/AppLayout';
 import { PageHeader } from '../../../components/ui/PageHeader';
 import { StatusBadge } from '../../../components/ui/StatusBadge';
+import { DataTable, DataColumn } from '../../../components/ui/DataTable';
 import { useAuth } from '../../../context/AuthContext';
 import { useOperations } from '../../../context/OperationsContext';
+import { Shipment } from '../../../types';
+import { History } from 'lucide-react';
 
 export default function DriverHistoryPage() {
   const { user } = useAuth();
   const { shipments } = useOperations();
 
   const deliveredShipments = shipments.filter(
-    (s) => (s.driver_id === user?.id || user?.roles.includes('sysadmin')) && s.status === 'delivered'
+    (s) =>
+      (s.driver_id === user?.id || user?.roles.includes('sysadmin')) && s.status === 'delivered'
   );
+
+  const columns: DataColumn<Shipment>[] = [
+    {
+      key: 'partner',
+      header: 'Tujuan & Surat Jalan',
+      width: '30%',
+      primary: true,
+      hideLabelOnMobile: true,
+      cell: (s) => (
+        <div>
+          <span className="block font-semibold text-teks">{s.customer_name}</span>
+          <span className="phm-num mt-0.5 block text-label text-brand-aksen">
+            {s.shipment_number}
+          </span>
+        </div>
+      ),
+    },
+    {
+      key: 'product',
+      header: 'Komponen',
+      cell: (s) => <span className="text-teks">{s.product_name}</span>,
+    },
+    {
+      key: 'qty',
+      header: 'Jumlah',
+      width: '110px',
+      align: 'right',
+      cell: (s) => (
+        <span className="phm-num font-semibold text-teks">
+          {s.quantity}
+          <span className="ml-1 text-label font-normal text-redup">pcs</span>
+        </span>
+      ),
+    },
+    {
+      key: 'vehicle',
+      header: 'Kendaraan',
+      width: '150px',
+      cell: (s) => <span className="phm-num text-teks">{s.vehicle_plate || '—'}</span>,
+    },
+    {
+      key: 'delivered',
+      header: 'Serah Terima',
+      width: '170px',
+      cell: (s) => <span className="phm-num text-teks">{s.delivered_at || '—'}</span>,
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      width: '150px',
+      align: 'right',
+      hideLabelOnMobile: true,
+      cell: (s) => <StatusBadge status={s.status} />,
+    },
+  ];
 
   return (
     <AppLayout>
       <PageHeader
-        title="Riwayat Pengiriman Selesai"
-        description="Arsip seluruh surat jalan dan pengantaran barang yang telah sukses diserahterimakan kepada mitra."
+        title="Riwayat Pengiriman"
+        description="Pengantaran yang sudah selesai diserahterimakan kepada mitra."
       />
 
-      <div className="phm-card overflow-hidden p-0">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700 text-slate-500 font-bold uppercase tracking-wider text-[0.6875rem]">
-              <tr>
-                <th className="py-3 px-4">No. Pengiriman</th>
-                <th className="py-3 px-4">Tujuan Mitra</th>
-                <th className="py-3 px-4">Komponen</th>
-                <th className="py-3 px-4 text-center">Jumlah</th>
-                <th className="py-3 px-4">Kendaraan</th>
-                <th className="py-3 px-4 text-right">Waktu Serah Terima</th>
-                <th className="py-3 px-4 text-right">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-              {deliveredShipments.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400">
-                    Belum ada riwayat pengiriman selesai.
-                  </td>
-                </tr>
-              ) : (
-                deliveredShipments.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                    <td className="py-3.5 px-4 font-mono font-bold text-[#0077C8]">
-                      {s.shipment_number}
-                    </td>
-                    <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
-                      {s.customer_name}
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300 font-medium">
-                      {s.product_name}
-                    </td>
-                    <td className="py-3.5 px-4 text-center font-extrabold text-sm">
-                      {s.quantity} pcs
-                    </td>
-                    <td className="py-3.5 px-4 text-slate-500 font-mono">
-                      {s.vehicle_plate}
-                    </td>
-                    <td className="py-3.5 px-4 text-right text-slate-500">
-                      {s.delivered_at || '15/11/2026 14:00'}
-                    </td>
-                    <td className="py-3.5 px-4 text-right">
-                      <StatusBadge status={s.status} />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <DataTable
+        columns={columns}
+        rows={deliveredShipments}
+        getKey={(s) => s.id}
+        emptyIcon={History}
+        emptyTitle="Belum ada pengiriman selesai"
+        emptyMessage="Pengantaran yang sudah Anda selesaikan akan tercatat di sini."
+      />
     </AppLayout>
   );
 }

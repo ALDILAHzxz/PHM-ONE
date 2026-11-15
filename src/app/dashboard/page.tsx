@@ -33,12 +33,12 @@ export default function DashboardPage() {
         description="Pantau alur kerja manufaktur, hasil verifikasi produksi, dan pengiriman barang secara terpadu."
         action={
           <div className="flex items-center gap-2">
-            <Link href="/operator/catat-hasil" className="phm-btn-secondary text-xs">
-              <PlusCircle className="w-3.5 h-3.5" />
+            <Link href="/operator/catat-hasil" className="phm-btn-secondary">
+              <PlusCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
               <span>Input Hasil</span>
             </Link>
-            <Link href="/pesanan/tambah" className="phm-btn-primary text-xs">
-              <PlusCircle className="w-3.5 h-3.5" />
+            <Link href="/pesanan/tambah" className="phm-btn-primary">
+              <PlusCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
               <span>Pesanan Baru</span>
             </Link>
           </div>
@@ -52,28 +52,28 @@ export default function DashboardPage() {
           value={orders.length}
           subtext="Pesanan mitra industri"
           icon={Package}
-          variant="blue"
+          tone="brand"
         />
         <StatCard
           label="Produksi Terverifikasi"
           value={`${totalVerified} pcs`}
           subtext="Lolos inspeksi supervisor & QC"
           icon={CheckCircle2}
-          variant="emerald"
+          tone="aman"
         />
         <StatCard
           label="Menunggu Verifikasi"
           value={`${pendingReviews} batch`}
           subtext="Laporan belum diperiksa"
           icon={Clock}
-          variant="amber"
+          tone="waspada"
         />
         <StatCard
           label="Pengiriman Berjalan"
           value={`${activeDeliveries} armada`}
           subtext="Truk logistik dalam rute"
           icon={Truck}
-          variant="indigo"
+          tone="brand"
         />
       </div>
 
@@ -84,16 +84,16 @@ export default function DashboardPage() {
           <div className="phm-card">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                <h2 className="phm-section">
                   Progres Produksi Pesanan Berjalan
                 </h2>
-                <p className="text-xs text-slate-500">
+                <p className="text-label text-redup">
                   Perbandingan target terhadap unit yang telah terverifikasi QC.
                 </p>
               </div>
-              <Link href="/pesanan" className="text-xs font-semibold text-[#0077C8] hover:underline flex items-center gap-1">
+              <Link href="/pesanan" className="text-label font-semibold text-brand-aksen hover:underline flex items-center gap-1">
                 <span>Lihat Semua</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="h-[1.125rem] w-[1.125rem] shrink-0" />
               </Link>
             </div>
 
@@ -101,31 +101,31 @@ export default function DashboardPage() {
               {orders.slice(0, 4).map((order) => {
                 const prog = getOrderProductionProgress(order.id);
                 return (
-                  <div key={order.id} className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
+                  <div key={order.id} className="p-4 rounded-kontrol border border-garis bg-kartu-dalam">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                       <div>
-                        <span className="font-mono text-xs font-bold text-[#0077C8]">{order.order_number}</span>
-                        <span className="text-xs text-slate-400 mx-2">·</span>
-                        <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{order.partner_name}</span>
+                        <span className="font-mono text-label font-bold text-brand-aksen">{order.order_number}</span>
+                        <span className="text-label text-redup mx-2">·</span>
+                        <span className="text-label font-semibold text-teks">{order.partner_name}</span>
                       </div>
                       <StatusBadge status={order.status} />
                     </div>
 
-                    <div className="text-sm font-bold text-slate-900 dark:text-white mb-2">
+                    <div className="text-isi font-bold text-teks mb-2">
                       {order.product_name}
                     </div>
 
                     {/* Progress Bar */}
                     <div className="space-y-1">
-                      <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <div className="flex justify-between text-label text-redup">
                         <span>
                           Terverifikasi: <strong>{prog.verified}</strong> / {prog.target} pcs
                         </span>
-                        <span className="font-bold text-slate-700 dark:text-slate-200">{prog.percentage}%</span>
+                        <span className="font-bold text-teks">{prog.percentage}%</span>
                       </div>
-                      <div className="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                      <div className="w-full h-2.5 rounded-full bg-netral-latar overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-blue-500 to-emerald-500 rounded-full transition-all duration-300"
+                          className="h-full bg-brand to-emerald-500 rounded-full transition-all duration-300"
                           style={{ width: `${prog.percentage}%` }}
                         />
                       </div>
@@ -140,21 +140,21 @@ export default function DashboardPage() {
         {/* Right 1 Col: Audit & Activity Trail */}
         <div className="space-y-6">
           <div className="phm-card">
-            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+            <h2 className="text-base font-bold text-teks mb-1">
               Catatan Aktivitas Sistem
             </h2>
-            <p className="text-xs text-slate-500 mb-4">
+            <p className="text-label text-redup mb-4">
               Jejak audit operasional terbaru di lantai produksi.
             </p>
 
             <div className="space-y-3">
               {auditLogs.slice(0, 5).map((log) => (
-                <div key={log.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs">
-                  <div className="flex items-center justify-between text-slate-400 text-[0.6875rem] mb-1">
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">{log.user_name}</span>
+                <div key={log.id} className="p-3 rounded-kontrol bg-kartu-dalam border border-garis text-label">
+                  <div className="flex items-center justify-between text-redup text-mini mb-1">
+                    <span className="font-semibold text-teks">{log.user_name}</span>
                     <span>{log.timestamp}</span>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
+                  <p className="text-teks font-medium leading-relaxed">
                     {log.details}
                   </p>
                 </div>

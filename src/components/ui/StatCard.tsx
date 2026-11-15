@@ -8,7 +8,18 @@ interface StatCardProps {
   value: string | number;
   subtext?: string;
   icon: LucideIcon;
-  variant?: 'blue' | 'emerald' | 'amber' | 'indigo' | 'rose';
+  /**
+   * Nada kartu. Hanya menerima MAKNA, bukan warna.
+   *
+   * Sebelumnya prop ini bernama `variant` dan menerima 'blue' | 'emerald' |
+   * 'amber' | 'indigo' | 'rose' — lima warna dekoratif yang dipakai bergantian
+   * supaya dashboard terlihat berwarna. Akibatnya warna kehilangan arti:
+   * kartu indigo dan kartu biru tidak menyatakan apa pun yang berbeda.
+   *
+   * Sekarang: `brand` untuk angka netral, dan tiga sisanya hanya dipakai bila
+   * angkanya memang berstatus baik/perlu perhatian/kritis.
+   */
+  tone?: 'brand' | 'aman' | 'waspada' | 'kritis';
 }
 
 export const StatCard: React.FC<StatCardProps> = ({
@@ -16,41 +27,29 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtext,
   icon: Icon,
-  variant = 'blue',
+  tone = 'brand',
 }) => {
-  const getColors = () => {
-    switch (variant) {
-      case 'emerald':
-        return 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400';
-      case 'amber':
-        return 'text-amber-600 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-400';
-      case 'indigo':
-        return 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400';
-      case 'rose':
-        return 'text-rose-600 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-400';
-      default:
-        return 'text-[#0077C8] bg-blue-50 dark:bg-blue-950/40 dark:text-blue-400';
-    }
+  const toneClasses: Record<string, { box: string; value: string }> = {
+    brand: { box: 'bg-brand-muda text-brand-aksen', value: 'text-teks' },
+    aman: { box: 'bg-aman-latar text-aman-teks', value: 'text-aman-teks' },
+    waspada: { box: 'bg-waspada-latar text-waspada-teks', value: 'text-waspada-teks' },
+    kritis: { box: 'bg-kritis-latar text-kritis-teks', value: 'text-kritis-teks' },
   };
 
+  const t = toneClasses[tone];
+
   return (
-    <div className="phm-card flex items-start justify-between">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          {label}
-        </p>
-        <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
+    <div className="phm-card flex items-start justify-between gap-3">
+      <div className="min-w-0">
+        <p className="phm-eyebrow">{label}</p>
+        <p className={`mt-1.5 text-kpi font-bold tabular-nums tracking-tight ${t.value}`}>
           {value}
         </p>
-        {subtext && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            {subtext}
-          </p>
-        )}
+        {subtext && <p className="phm-helper mt-1 text-label">{subtext}</p>}
       </div>
-      <div className={`p-3 rounded-2xl ${getColors()}`}>
-        <Icon className="w-6 h-6" />
-      </div>
+      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-kontrol ${t.box}`}>
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
     </div>
   );
 };

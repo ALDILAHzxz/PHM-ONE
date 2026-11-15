@@ -19,6 +19,7 @@ import {
   FileText,
   Activity,
   Layers,
+  X,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -28,16 +29,16 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile }) => {
   const pathname = usePathname();
-  const { user, activeRole } = useAuth();
+  const { activeRole } = useAuth();
   const { pendingReviewsCount } = useOperations();
 
   const navSections = [
     {
       title: 'Utama',
-      roles: ['management', 'sysadmin', 'admin_order', 'ppic', 'supervisor', 'operator', 'warehouse', 'driver'],
+      roles: ['management', 'sysadmin', 'admin_order', 'ppic', 'supervisor'],
       items: [
         {
-          label: 'Dashboard KPI',
+          label: 'Dashboard',
           href: '/dashboard',
           icon: LayoutDashboard,
           roles: ['management', 'sysadmin', 'admin_order', 'ppic', 'supervisor'],
@@ -48,13 +49,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
       title: 'Lini Operator',
       roles: ['operator', 'supervisor', 'sysadmin'],
       items: [
-        { label: 'Tugas Produksi', href: '/operator/tugas', icon: ClipboardList, roles: ['operator', 'sysadmin', 'supervisor'] },
+        {
+          label: 'Tugas Produksi',
+          href: '/operator/tugas',
+          icon: ClipboardList,
+          roles: ['operator', 'sysadmin', 'supervisor'],
+        },
         { label: 'Catat Hasil', href: '/operator/catat-hasil', icon: PlusCircle, roles: ['operator', 'sysadmin'] },
         { label: 'Riwayat Laporan', href: '/operator/riwayat', icon: History, roles: ['operator', 'sysadmin'] },
       ],
     },
     {
-      title: 'Supervisor Produksi',
+      title: 'Supervisor',
       roles: ['supervisor', 'sysadmin', 'management'],
       items: [
         {
@@ -73,15 +79,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
       roles: ['admin_order', 'management', 'sysadmin', 'ppic'],
       items: [
         { label: 'Semua Pesanan', href: '/pesanan', icon: Package, roles: ['admin_order', 'management', 'sysadmin', 'ppic'] },
-        { label: 'Input Pesanan Baru', href: '/pesanan/tambah', icon: PlusCircle, roles: ['admin_order', 'sysadmin'] },
+        { label: 'Pesanan Baru', href: '/pesanan/tambah', icon: PlusCircle, roles: ['admin_order', 'sysadmin'] },
       ],
     },
     {
-      title: 'Perencanaan (PPIC)',
+      title: 'Perencanaan',
       roles: ['ppic', 'management', 'sysadmin'],
       items: [
         { label: 'Ringkasan Rencana', href: '/perencanaan', icon: CalendarCheck, roles: ['ppic', 'management', 'sysadmin'] },
-        { label: 'Work Orders (WO)', href: '/perencanaan/work-order', icon: Layers, roles: ['ppic', 'sysadmin'] },
+        { label: 'Work Order', href: '/perencanaan/work-order', icon: Layers, roles: ['ppic', 'sysadmin'] },
         { label: 'Penugasan Operator', href: '/perencanaan/penugasan', icon: Users, roles: ['ppic', 'sysadmin'] },
       ],
     },
@@ -94,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
       ],
     },
     {
-      title: 'Driver Pengiriman',
+      title: 'Driver',
       roles: ['driver', 'warehouse', 'sysadmin'],
       items: [
         { label: 'Antrean Antaran', href: '/driver/pengiriman', icon: Truck, roles: ['driver', 'warehouse', 'sysadmin'] },
@@ -102,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
       ],
     },
     {
-      title: 'Sistem & Konfigurasi',
+      title: 'Sistem',
       roles: ['sysadmin', 'management'],
       items: [
         { label: 'Data Pengguna', href: '/sistem/pengguna', icon: Users, roles: ['sysadmin'] },
@@ -114,82 +120,82 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpenMobile, onCloseMobile })
 
   const currentRole = activeRole || 'operator';
 
+  const visibleSections = navSections
+    .map((sec) => ({
+      ...sec,
+      items: sec.items.filter(
+        (item) => currentRole === 'sysadmin' || item.roles.includes(currentRole)
+      ),
+    }))
+    .filter(
+      (sec) =>
+        (currentRole === 'sysadmin' || sec.roles.includes(currentRole)) && sec.items.length > 0
+    );
+
   return (
     <>
-      {/* Mobile Backdrop */}
+      {/* Backdrop hanya di mobile */}
       {isOpenMobile && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs md:hidden"
+          className="fixed inset-0 z-[55] bg-slate-900/50 md:hidden"
+          aria-hidden="true"
         />
       )}
 
-      {/* Sidebar Panel */}
+      {/* Sidebar dimulai tepat di bawah shell (pita + navbar). Angkanya satu,
+          dibaca dari --h-shell, jadi tidak bisa lagi meleset dari navbar. */}
       <aside
-        className={`fixed top-16 bottom-0 left-0 z-40 w-64 bg-white dark:bg-[#1E293B] border-r border-slate-200 dark:border-slate-800 overflow-y-auto transition-transform duration-200 ease-in-out md:translate-x-0 ${
+        className={`phm-scroll fixed bottom-0 left-0 z-[56] w-sidebar overflow-y-auto border-r border-garis bg-kartu transition-transform duration-200 ease-panel md:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{ top: 'var(--h-shell)' }}
+        aria-label="Navigasi utama"
       >
-        <div className="py-4 px-3 space-y-6">
-          {navSections.map((sec, idx) => {
-            // Check if section is relevant to active role or sysadmin
-            const isSectionVisible =
-              currentRole === 'sysadmin' ||
-              sec.roles.includes(currentRole);
-
-            if (!isSectionVisible) return null;
-
-            // Filter items in section
-            const visibleItems = sec.items.filter(
-              (item) => currentRole === 'sysadmin' || item.roles.includes(currentRole)
-            );
-
-            if (visibleItems.length === 0) return null;
-
-            return (
-              <div key={idx}>
-                <div className="px-3 mb-2 text-[0.6875rem] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  {sec.title}
-                </div>
-                <div className="space-y-0.5">
-                  {visibleItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
-
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={onCloseMobile}
-                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                          isActive
-                            ? 'bg-[#0077C8] text-white shadow-xs'
-                            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5 truncate">
-                          <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400 dark:text-slate-400'}`} />
-                          <span className="truncate">{item.label}</span>
-                        </div>
-                        {item.badge !== undefined && (
-                          <span
-                            className={`px-1.5 py-0.5 rounded-full text-[0.6875rem] font-bold ${
-                              isActive
-                                ? 'bg-white text-[#0077C8]'
-                                : 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300'
-                            }`}
-                          >
-                            {item.badge}
-                          </span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
+        {/* Tombol tutup hanya tampil di mobile */}
+        <div className="flex items-center justify-between border-b border-garis px-4 py-2 md:hidden">
+          <span className="phm-eyebrow">Menu</span>
+          <button onClick={onCloseMobile} className="phm-icon-btn" aria-label="Tutup menu navigasi">
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
         </div>
+
+        <nav className="space-y-5 px-3 py-4">
+          {visibleSections.map((sec) => (
+            <div key={sec.title}>
+              <p className="phm-eyebrow px-3 pb-1.5">{sec.title}</p>
+              <div className="space-y-0.5">
+                {sec.items.map((item) => {
+                  const isActive = pathname === item.href;
+                  const Icon = item.icon;
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={onCloseMobile}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`phm-nav-link ${isActive ? 'phm-nav-link-active' : ''}`}
+                    >
+                      <Icon
+                        className={`h-[1.125rem] w-[1.125rem] shrink-0 ${
+                          isActive ? 'text-brand-aksen' : 'text-redup'
+                        }`}
+                        aria-hidden="true"
+                      />
+                      <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                      {item.badge !== undefined && (
+                        <span className="phm-badge phm-badge-waspada shrink-0 px-2 py-0 text-mini">
+                          {item.badge}
+                        </span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </nav>
       </aside>
     </>
   );

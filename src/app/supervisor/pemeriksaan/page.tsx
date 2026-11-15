@@ -50,10 +50,10 @@ export default function SupervisorQueuePage() {
       {pendingReports.length === 0 ? (
         <div className="phm-card text-center py-12">
           <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-slate-800 dark:text-white">
+          <h3 className="text-base font-bold text-teks dark:text-white">
             Semua laporan telah diperiksa
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-label text-redup mt-1">
             Tidak ada laporan hasil produksi yang menunggu verifikasi saat ini.
           </p>
         </div>
@@ -66,23 +66,23 @@ export default function SupervisorQueuePage() {
             >
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-[#0077C8]">{rep.work_order_number}</span>
-                  <span className="text-xs text-slate-400">·</span>
+                  <span className="font-mono text-label font-bold text-brand-aksen">{rep.work_order_number}</span>
+                  <span className="text-label text-redup">·</span>
                   <StatusBadge status={rep.status} />
                   {rep.issue_category && (
-                    <span className="text-[0.6875rem] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
+                    <span className="text-mini font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">
                       Kendala: {rep.issue_category}
                     </span>
                   )}
                 </div>
 
-                <div className="text-base font-bold text-slate-900 dark:text-white">
+                <div className="phm-section">
                   {rep.product_name}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-label text-redup">
                   <span>
-                    Dilaporkan oleh: <strong className="text-slate-800 dark:text-slate-200">{rep.reported_by_name}</strong>
+                    Dilaporkan oleh: <strong className="text-teks">{rep.reported_by_name}</strong>
                   </span>
                   <span>
                     Waktu: <strong>{rep.created_at}</strong>
@@ -90,16 +90,16 @@ export default function SupervisorQueuePage() {
                 </div>
 
                 {rep.notes && (
-                  <p className="text-xs text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 mt-2">
+                  <p className="text-label text-teks bg-kartu-dalam p-2.5 rounded-kontrol border border-garis mt-2">
                     &ldquo;{rep.notes}&rdquo;
                   </p>
                 )}
               </div>
 
               {/* Quantity and Action Buttons */}
-              <div className="flex items-center gap-4 shrink-0 justify-between md:justify-end border-t md:border-t-0 pt-3 md:pt-0 border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-4 shrink-0 justify-between md:justify-end border-t md:border-t-0 pt-3 md:pt-0 border-garis">
                 <div className="text-center px-4">
-                  <div className="text-[0.6875rem] text-slate-400 uppercase font-semibold">Unit Dilaporkan</div>
+                  <div className="text-mini text-redup uppercase font-semibold">Unit Dilaporkan</div>
                   <div className="text-2xl font-black text-amber-600">+{rep.quantity} pcs</div>
                 </div>
 
@@ -110,19 +110,19 @@ export default function SupervisorQueuePage() {
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
                       placeholder="Alasan penolakan QC…"
-                      className="phm-input text-xs"
+                      className="phm-input text-label"
                       autoFocus
                     />
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleConfirmReject(rep.id)}
-                        className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold cursor-pointer"
+                        className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-label font-semibold cursor-pointer"
                       >
                         Konfirmasi Tolak
                       </button>
                       <button
                         onClick={() => setRejectingId(null)}
-                        className="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs cursor-pointer"
+                        className="px-3 py-1.5 bg-netral-latar text-teks rounded-lg text-label cursor-pointer"
                       >
                         Batal
                       </button>
@@ -132,16 +132,16 @@ export default function SupervisorQueuePage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleApprove(rep.id, rep.reported_by_id)}
-                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+                      className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-label rounded-kontrol flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                     >
-                      <CheckCircle2 className="w-4 h-4" />
+                      <CheckCircle2 className="h-[1.125rem] w-[1.125rem] shrink-0" />
                       <span>Verifikasi / Setujui</span>
                     </button>
                     <button
                       onClick={() => handleOpenReject(rep.id)}
-                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-semibold text-xs rounded-xl flex items-center gap-1 border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer"
+                      className="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-semibold text-label rounded-kontrol flex items-center gap-1 border border-rose-200 dark:border-rose-800 transition-colors cursor-pointer"
                     >
-                      <XCircle className="w-4 h-4" />
+                      <XCircle className="h-[1.125rem] w-[1.125rem] shrink-0" />
                       <span>Tolak</span>
                     </button>
                   </div>
